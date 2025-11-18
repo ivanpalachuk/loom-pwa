@@ -53,9 +53,9 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex flex-col">
+    <div className="fixed inset-0 bg-black z-50 flex flex-col" style={{ height: '100dvh' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-black/50 backdrop-blur">
+      <div className="flex items-center justify-between p-4 bg-black/50 backdrop-blur flex-shrink-0">
         <button
           onClick={handleClose}
           className="text-white p-2"
@@ -99,7 +99,7 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
       </div>
 
       {/* Controls */}
-      <div className="p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+      <div className="p-8 bg-black/90 flex-shrink-0">
         {capturedImage ? (
           <div className="flex gap-4 justify-center">
             <button
@@ -120,9 +120,13 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
             <button
               onClick={handleCapture}
               disabled={!isStreaming}
-              className="w-20 h-20 bg-white rounded-full border-[6px] border-white shadow-2xl hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed relative"
+              className="w-24 h-24 bg-white rounded-full shadow-2xl hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed relative ring-4 ring-loom/50"
+              style={{ 
+                background: 'white',
+                border: '6px solid white',
+              }}
             >
-              <div className="absolute inset-2 bg-white rounded-full"></div>
+              <div className="absolute inset-3 bg-loom rounded-full"></div>
               <span className="sr-only">Capturar foto</span>
             </button>
           </div>
