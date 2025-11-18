@@ -48,16 +48,26 @@ export const useCamera = (): UseCameraReturn => {
   }, []);
 
   const stopCamera = useCallback(() => {
+    // Primero detener todos los tracks del stream
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach(track => {
+        track.stop();
+        streamRef.current?.removeTrack(track);
+      });
       streamRef.current = null;
     }
     
+    // Limpiar el elemento video
     if (videoRef.current) {
+      videoRef.current.pause();
       videoRef.current.srcObject = null;
+      videoRef.current.load();
+      // Forzar garbage collection del srcObject
+      videoRef.current.src = '';
     }
     
     setIsStreaming(false);
+    setCapturedImage(null);
   }, []);
 
   const capturePhoto = useCallback((): string | null => {

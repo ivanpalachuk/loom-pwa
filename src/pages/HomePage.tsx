@@ -1,27 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Camera from '../components/Camera';
+import AccelerometerBall from '../components/AccelerometerBall';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [showCamera, setShowCamera] = useState(false);
+  const [showMix, setShowMix] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
-
-  useEffect(() => {
-    // Verificar si la fuente Loos está cargada
-    document.fonts.ready.then(() => {
-      const loosFonts = Array.from(document.fonts).filter(font => 
-        font.family.includes('Loos')
-      );
-      console.log('🔤 Fuentes Loos cargadas:', loosFonts.length);
-      console.log('📋 Todas las fuentes:', Array.from(document.fonts).map(f => f.family));
-    });
-  }, []);
 
   const handleModuleClick = (moduleId: string) => {
     if (moduleId === 'h20') {
       setShowCamera(true);
+    } else if (moduleId === 'mix') {
+      setShowMix(true);
     } else {
       console.log(`Módulo ${moduleId} - Próximamente`);
     }
@@ -53,13 +46,18 @@ export default function HomePage() {
       id: 'unknown',
       name: '?',
       description: 'Próximamente'
+    },
+    {
+      id: 'ecommerce',
+      name: 'E-COM',
+      description: 'Comercio electrónico'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-loom-10">
+    <div className="h-screen bg-loom-10 flex flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-white shadow-sm relative">
+      <header className="bg-white shadow-sm relative flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-loom">loom</h1>
@@ -91,27 +89,23 @@ export default function HomePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Módulos</h2>
-          <p className="text-gray-600">Selecciona un módulo para comenzar</p>
+      <main className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 py-4 overflow-hidden">
+        <div className="mb-3 flex-shrink-0">
+          <h2 className="text-lg font-bold text-gray-800 mb-1">Módulos</h2>
+          <p className="text-xs text-gray-600">Selecciona un módulo para comenzar</p>
         </div>
 
-        {/* Módulos Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Módulos Lista - ocupan toda la altura disponible */}
+        <div className="flex-1 flex flex-col gap-3 min-h-0">
           {modules.map((module) => (
             <button
               key={module.id}
               onClick={() => handleModuleClick(module.id)}
-              className="bg-loom hover:bg-loom-70 text-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 p-8 min-h-[200px] sm:min-h-[240px] flex flex-col items-center justify-center"
+              className="flex-1 bg-loom hover:bg-loom-70 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center min-h-0"
             >
-                <h3 className="text-5xl sm:text-6xl font-bold mb-3">
+                <h3 className="text-4xl sm:text-5xl font-bold">
                   {module.name}
                 </h3>
-                
-                <p className="text-center text-sm text-white/80">
-                  {module.description}
-                </p>
             </button>
           ))}
         </div>
@@ -140,6 +134,13 @@ export default function HomePage() {
         <Camera
           onCapture={handlePhotoCapture}
           onClose={() => setShowCamera(false)}
+        />
+      )}
+
+      {/* Mix Modal */}
+      {showMix && (
+        <AccelerometerBall
+          onClose={() => setShowMix(false)}
         />
       )}
     </div>
