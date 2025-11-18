@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+/* Configuración global de fuente */
+body {
+  font-family: 'Loos', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Colores Corporativos Loom - Tailwind v4 */
+@theme {
+  --color-loom: #004EA8;
+  --color-loom-100: #004EA8;
+  --color-loom-70: #4D7FBD;
+  --color-loom-50: #8099D3;
+  --color-loom-20: #CCDBF0;
+  --color-loom-10: #E5EDF7;
+}
