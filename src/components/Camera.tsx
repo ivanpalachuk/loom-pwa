@@ -53,9 +53,9 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex flex-col" style={{ height: '100dvh' }}>
+    <div className="fixed inset-0 bg-black z-50 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-black/50 backdrop-blur flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 bg-black/50 backdrop-blur flex-shrink-0">
         <button
           onClick={handleClose}
           className="text-white p-2"
@@ -64,12 +64,12 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <h2 className="text-white font-semibold">Capturar Foto</h2>
+        <h2 className="text-white font-semibold text-sm">Capturar Foto</h2>
         <div className="w-6"></div>
       </div>
 
       {/* Camera View or Preview */}
-      <div className="flex-1 relative flex items-center justify-center bg-black">
+      <div className="flex-1 relative flex items-center justify-center bg-black overflow-hidden min-h-0">
         {error && (
           <div className="absolute inset-0 flex items-center justify-center p-4">
             <div className="bg-red-500/90 text-white p-4 rounded-lg max-w-sm">
@@ -98,19 +98,19 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
         <canvas ref={canvasRef} className="hidden" />
       </div>
 
-      {/* Controls */}
-      <div className="p-8 bg-black/90 flex-shrink-0">
+      {/* Controls - Siempre visible */}
+      <div className="p-6 bg-black flex-shrink-0" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
         {capturedImage ? (
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-3 justify-center">
             <button
               onClick={handleRetake}
-              className="px-8 py-4 bg-gray-600 text-white rounded-full font-medium hover:bg-gray-700 transition-colors text-lg"
+              className="px-6 py-3 bg-gray-600 text-white rounded-full font-medium hover:bg-gray-700 transition-colors"
             >
               Reintentar
             </button>
             <button
               onClick={handleConfirm}
-              className="px-8 py-4 bg-loom text-white rounded-full font-medium hover:bg-loom-70 transition-colors text-lg"
+              className="px-6 py-3 bg-loom text-white rounded-full font-medium hover:bg-loom-70 transition-colors"
             >
               Usar Foto
             </button>
@@ -120,13 +120,14 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
             <button
               onClick={handleCapture}
               disabled={!isStreaming}
-              className="w-24 h-24 bg-white rounded-full shadow-2xl hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed relative ring-4 ring-loom/50"
+              className="w-20 h-20 bg-white rounded-full shadow-2xl active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed relative"
               style={{ 
                 background: 'white',
-                border: '6px solid white',
+                border: '5px solid white',
+                boxShadow: '0 0 0 4px rgba(0, 78, 168, 0.3), 0 20px 50px rgba(0, 0, 0, 0.5)'
               }}
             >
-              <div className="absolute inset-3 bg-loom rounded-full"></div>
+              <div className="absolute inset-2 bg-loom rounded-full"></div>
               <span className="sr-only">Capturar foto</span>
             </button>
           </div>
