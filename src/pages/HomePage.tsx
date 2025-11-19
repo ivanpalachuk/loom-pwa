@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Camera from '../components/Camera';
 import AccelerometerBall from '../components/AccelerometerBall';
+import WaterAnalysis from '../components/WaterAnalysis';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export default function HomePage() {
   const [showMix, setShowMix] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [showWaterAnalysis, setShowWaterAnalysis] = useState(false);
 
   const handleModuleClick = (moduleId: string) => {
     if (moduleId === 'h20') {
@@ -23,7 +25,7 @@ export default function HomePage() {
   const handlePhotoCapture = (imageData: string) => {
     setCapturedPhoto(imageData);
     setShowCamera(false);
-    console.log('Foto capturada:', imageData.substring(0, 50) + '...');
+    setShowWaterAnalysis(true);
   };
 
   const handleLogout = () => {
@@ -61,7 +63,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-loom">loom</h1>
-            <button 
+            <button
               onClick={() => setShowMenu(!showMenu)}
               className="p-2 text-gray-600 hover:text-loom transition-colors"
             >
@@ -103,9 +105,9 @@ export default function HomePage() {
               onClick={() => handleModuleClick(module.id)}
               className="flex-1 bg-loom hover:bg-loom-70 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center min-h-0"
             >
-                <h3 className="text-4xl sm:text-5xl font-bold">
-                  {module.name}
-                </h3>
+              <h3 className="text-4xl sm:text-5xl font-bold">
+                {module.name}
+              </h3>
             </button>
           ))}
         </div>
@@ -141,6 +143,14 @@ export default function HomePage() {
       {showMix && (
         <AccelerometerBall
           onClose={() => setShowMix(false)}
+        />
+      )}
+
+      {/* Water Analysis Modal */}
+      {showWaterAnalysis && capturedPhoto && (
+        <WaterAnalysis
+          imageData={capturedPhoto}
+          onClose={() => setShowWaterAnalysis(false)}
         />
       )}
     </div>
