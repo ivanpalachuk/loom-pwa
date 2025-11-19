@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Camera from '../components/Camera';
 import AccelerometerBall from '../components/AccelerometerBall';
-import WaterAnalysis from '../components/WaterAnalysis';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -10,7 +9,6 @@ export default function HomePage() {
   const [showMix, setShowMix] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
-  const [showWaterAnalysis, setShowWaterAnalysis] = useState(false);
 
   const handleModuleClick = (moduleId: string) => {
     if (moduleId === 'h20') {
@@ -25,7 +23,8 @@ export default function HomePage() {
   const handlePhotoCapture = (imageData: string) => {
     setCapturedPhoto(imageData);
     setShowCamera(false);
-    setShowWaterAnalysis(true);
+    // Navigate to water analysis page with image data
+    navigate('/water-analysis', { state: { imageData } });
   };
 
   const handleLogout = () => {
@@ -62,7 +61,7 @@ export default function HomePage() {
       <header className="bg-white shadow-sm relative flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-loom">loom</h1>
+            <img src="/logotest.png" alt="Loom" className="h-12" />
             <button
               onClick={() => setShowMenu(!showMenu)}
               className="p-2 text-gray-600 hover:text-loom transition-colors"
@@ -92,18 +91,13 @@ export default function HomePage() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 py-4 overflow-hidden">
-        <div className="mb-3 flex-shrink-0">
-          <h2 className="text-lg font-bold text-gray-800 mb-1">Módulos</h2>
-          <p className="text-xs text-gray-600">Selecciona un módulo para comenzar</p>
-        </div>
-
-        {/* Módulos Lista - ocupan toda la altura disponible */}
-        <div className="flex-1 flex flex-col gap-3 min-h-0">
+        {/* Módulos Grid 2x2 - ocupan toda la altura disponible */}
+        <div className="flex-1 grid grid-cols-2 gap-3 min-h-0">
           {modules.map((module) => (
             <button
               key={module.id}
               onClick={() => handleModuleClick(module.id)}
-              className="flex-1 bg-loom hover:bg-loom-70 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center min-h-0"
+              className="bg-loom hover:bg-loom-70 text-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
             >
               <h3 className="text-4xl sm:text-5xl font-bold">
                 {module.name}
@@ -143,14 +137,6 @@ export default function HomePage() {
       {showMix && (
         <AccelerometerBall
           onClose={() => setShowMix(false)}
-        />
-      )}
-
-      {/* Water Analysis Modal */}
-      {showWaterAnalysis && capturedPhoto && (
-        <WaterAnalysis
-          imageData={capturedPhoto}
-          onClose={() => setShowWaterAnalysis(false)}
         />
       )}
     </div>

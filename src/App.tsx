@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Splash from './components/Splash';
 import { Login } from './components/Login';
 import HomePage from './pages/HomePage';
+import WaterAnalysisPage from './pages/WaterAnalysisPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +53,16 @@ function App() {
             element={
               isAuthenticated ? (
                 <HomePage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/water-analysis"
+            element={
+              isAuthenticated ? (
+                <WaterAnalysisPage />
               ) : (
                 <Navigate to="/login" replace />
               )

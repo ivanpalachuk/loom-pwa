@@ -21,7 +21,7 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
 
   useEffect(() => {
     startCamera();
-    
+
     return () => {
       stopCamera();
     };
@@ -50,6 +50,56 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
   const handleClose = () => {
     stopCamera();
     onClose?.();
+  };
+
+  const handleSimulateCapture = () => {
+    // Use a simulated test strip image for development/testing
+    // In production, this would be replaced with actual camera capture
+    fetch('/water-test-strip-sample.png')
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result as string;
+          if (onCapture) {
+            onCapture(base64data);
+          }
+          stopCamera();
+          onClose?.();
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch(() => {
+        // Fallback: create a simple colored rectangle as placeholder
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 600;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          // Create gradient background
+          const gradient = ctx.createLinearGradient(0, 0, 800, 600);
+          gradient.addColorStop(0, '#667eea');
+          gradient.addColorStop(0.5, '#764ba2');
+          gradient.addColorStop(1, '#f093fb');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, 800, 600);
+
+          // Add text
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 48px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Tira Reactiva Simulada', 400, 280);
+          ctx.font = '24px sans-serif';
+          ctx.fillText('(Imagen de prueba)', 400, 340);
+
+          const imageData = canvas.toDataURL('image/png');
+          if (onCapture) {
+            onCapture(imageData);
+          }
+          stopCamera();
+          onClose?.();
+        }
+      });
   };
 
   return (
@@ -116,12 +166,12 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
             </button>
           </div>
         ) : (
-          <div className="flex justify-center">
+          <div className="flex flex-col gap-3 items-center">
             <button
               onClick={handleCapture}
               disabled={!isStreaming}
               className="w-20 h-20 bg-white rounded-full shadow-2xl active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed relative"
-              style={{ 
+              style={{
                 background: 'white',
                 border: '5px solid white',
                 boxShadow: '0 0 0 4px rgba(0, 78, 168, 0.3), 0 20px 50px rgba(0, 0, 0, 0.5)'
@@ -130,6 +180,16 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
               <div className="absolute inset-2 bg-loom rounded-full"></div>
               <span className="sr-only">Capturar foto</span>
             </button>
+
+            {/* Simulate button when camera is not available */}
+            {error && (
+              <button
+                onClick={handleSimulateCapture}
+                className="px-6 py-3 bg-purple-600 text-white rounded-full font-medium hover:bg-purple-700 transition-colors shadow-lg"
+              >
+                🎭 Simular Captura
+              </button>
+            )}
           </div>
         )}
       </div>

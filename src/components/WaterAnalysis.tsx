@@ -25,7 +25,7 @@ export default function WaterAnalysis({ imageData, onClose }: WaterAnalysisProps
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 {/* Header */}
-                <div className="sticky top-0 bg-gradient-to-r from-loom to-loom-70 text-white p-6 rounded-t-2xl">
+                <div className="sticky top-0 z-10 bg-gradient-to-r from-loom to-loom-70 text-white p-6 rounded-t-2xl">
                     <div className="flex items-center justify-between">
                         <h2 className="text-2xl font-bold">Análisis de Agua</h2>
                         <button
@@ -42,7 +42,7 @@ export default function WaterAnalysis({ imageData, onClose }: WaterAnalysisProps
                 <div className="p-6 space-y-6">
                     {/* Image Preview */}
                     <div className="relative rounded-xl overflow-hidden shadow-lg">
-                        <img src={imageData} alt="Water test strip" className="w-full" />
+                        <img src={imageData} alt="Water test strip" className="w-full max-h-48 object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-30" />
                     </div>
 
