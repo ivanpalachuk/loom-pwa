@@ -43,23 +43,39 @@ export default function MixPage() {
     const [shakeCount, setShakeCount] = useState(0);
     const [permissionRequested, setPermissionRequested] = useState(false);
 
-    const { requestPermission, permission } = useAccelerometer({
+    const accelerometerHook = useAccelerometer({
         onShake: () => {
-            if (permission === 'granted') {
+            if (accelerometerHook.permission === 'granted') {
                 setShakeCount(prev => prev + 1);
             }
         },
         shakeThreshold: 15,
     });
 
+    const { requestPermission, permission } = accelerometerHook;
+
     // Solicitar permisos al cargar el componente (solo en iOS)
-    const handleRequestPermission = async () => {
-        if (!permissionRequested) {
-            const granted = await requestPermission();
-            setPermissionRequested(true);
-            if (!granted) {
-                console.warn('Permiso de acelerómetro no concedido');
-            }
+    const handleRequestPermission = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (permissionRequested) return;
+        
+        setPermissionRequested(true);
+        
+        // Llamar directamente sin await para iOS
+        if (requestPermission) {
+            requestPermission()
+                .then((granted) => {
+                    console.log('Permiso concedido:', granted);
+                    if (!granted) {
+                        alert('No se pudo activar el acelerómetro. Puedes usar el botón "Calcular MIX" en su lugar.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error al solicitar permiso:', error);
+                    alert('Error al activar el acelerómetro. Puedes usar el botón "Calcular MIX" en su lugar.');
+                });
         }
     };
 

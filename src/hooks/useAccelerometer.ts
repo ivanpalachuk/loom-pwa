@@ -116,20 +116,34 @@ export function useAccelerometer(options?: UseAccelerometerOptions) {
     try {
       // iOS requiere permiso explícito
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (typeof (DeviceMotionEvent as any).requestPermission === 'function') {
+      const DeviceMotionEventTyped = DeviceMotionEvent as any;
+      
+      if (typeof DeviceMotionEventTyped.requestPermission === 'function') {
+        console.log('Solicitando permiso de acelerómetro iOS...');
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const response = await (DeviceMotionEvent as any).requestPermission();
-        setPermission(response);
-        if (response !== 'granted') {
+        const response = await DeviceMotionEventTyped.requestPermission();
+        console.log('Respuesta de permiso:', response);
+        
+        if (response === 'granted') {
+          setPermission('granted');
+          setError(null);
+          return true;
+        } else {
+          setPermission('denied');
           setError('Permiso denegado para acceder al acelerómetro');
+          return false;
         }
-        return response === 'granted';
       }
+      
       // Android y otros no requieren permiso
+      console.log('Plataforma no requiere permiso de acelerómetro');
       setPermission('granted');
+      setError(null);
       return true;
     } catch (err) {
-      setError('Error al solicitar permiso: ' + (err as Error).message);
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error('Error al solicitar permiso de acelerómetro:', err);
+      setError('Error al solicitar permiso: ' + errorMsg);
       setPermission('denied');
       return false;
     }

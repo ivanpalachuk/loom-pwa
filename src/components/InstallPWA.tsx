@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 interface BeforeInstallPromptEvent extends Event {
     prompt: () => Promise<void>;
@@ -83,6 +85,116 @@ export default function InstallPWA() {
         window.location.reload(); // Recargar para actualizar el estado
     };
 
+    const startIOSTour = () => {
+        const driverObj = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: [
+                {
+                    element: 'body',
+                    popover: {
+                        title: 'Instalar Loom como App',
+                        description: 'Te guiaremos paso a paso para instalar Loom en tu dispositivo',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '📱 Paso 1: Encuentra el botón Compartir',
+                        description: 'En Safari, busca el botón de <strong>Compartir</strong> en la parte inferior de la pantalla. Es un cuadrado con una flecha hacia arriba (▭⬆)',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '➕ Paso 2: Agregar a pantalla de inicio',
+                        description: 'Desplázate por el menú y toca <strong>"Agregar a pantalla de inicio"</strong> o <strong>"Add to Home Screen"</strong>',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '✅ Paso 3: Confirmar',
+                        description: 'Toca el botón <strong>"Agregar"</strong> en la esquina superior derecha',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '🎉 ¡Listo!',
+                        description: 'La app Loom aparecerá en tu pantalla de inicio. Ábrela desde ahí para una experiencia completa',
+                        side: 'top',
+                        align: 'center'
+                    }
+                }
+            ],
+            onDestroyed: () => {
+                handleIOSDismiss();
+            }
+        });
+        
+        driverObj.drive();
+    };
+
+    const startChromeTour = () => {
+        const driverObj = driver({
+            showProgress: true,
+            showButtons: ['next', 'previous', 'close'],
+            steps: [
+                {
+                    element: 'body',
+                    popover: {
+                        title: '⚠️ Chrome no puede instalar apps en iOS',
+                        description: 'Chrome en iOS no soporta la instalación de PWAs. Necesitas usar Safari',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '🌐 Paso 1: Abre Safari',
+                        description: 'Copia esta URL y ábrela en el navegador <strong>Safari</strong> (el navegador azul de Apple)',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '📱 Paso 2: Botón Compartir',
+                        description: 'Una vez en Safari, toca el botón de <strong>Compartir</strong> (▭⬆) en la parte inferior',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '➕ Paso 3: Agregar a pantalla',
+                        description: 'Selecciona <strong>"Agregar a pantalla de inicio"</strong>',
+                        side: 'top',
+                        align: 'center'
+                    }
+                },
+                {
+                    popover: {
+                        title: '🎉 ¡Todo listo!',
+                        description: 'Confirma y la app estará disponible en tu pantalla de inicio',
+                        side: 'top',
+                        align: 'center'
+                    }
+                }
+            ],
+            onDestroyed: () => {
+                handleIOSDismiss();
+            }
+        });
+        
+        driverObj.drive();
+    };
+
     // Mostrar prompt de Android/Chrome Desktop
     if (showInstallPrompt && deferredPrompt) {
         return (
@@ -165,12 +277,20 @@ export default function InstallPWA() {
                             </div>
                         )}
 
-                        <button
-                            onClick={handleIOSDismiss}
-                            className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium active:scale-95 transition-transform"
-                        >
-                            Entendido
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={isChrome ? startChromeTour : startIOSTour}
+                                className="flex-1 bg-loom text-white py-2 px-4 rounded-lg text-sm font-semibold active:scale-95 transition-transform"
+                            >
+                                Ver guía paso a paso
+                            </button>
+                            <button
+                                onClick={handleIOSDismiss}
+                                className="px-4 py-2 text-gray-600 text-sm font-medium active:scale-95 transition-transform"
+                            >
+                                Cerrar
+                            </button>
+                        </div>
                     </div>
 
                     <button
