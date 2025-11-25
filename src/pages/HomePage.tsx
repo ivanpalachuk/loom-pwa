@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Camera from '../components/Camera';
-import AccelerometerBall from '../components/AccelerometerBall';
+import PhotoConfirm from '../components/PhotoConfirm';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [showCamera, setShowCamera] = useState(false);
-  const [showMix, setShowMix] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+  const [showPhotoConfirm, setShowPhotoConfirm] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   const handleModuleClick = (moduleId: string) => {
     if (moduleId === 'h20') {
       setShowCamera(true);
     } else if (moduleId === 'mix') {
-      setShowMix(true);
+      navigate('/mix');
     } else {
       console.log(`Módulo ${moduleId} - Próximamente`);
     }
@@ -23,8 +23,25 @@ export default function HomePage() {
   const handlePhotoCapture = (imageData: string) => {
     setCapturedPhoto(imageData);
     setShowCamera(false);
-    // Navigate to water analysis page with image data
-    navigate('/water-analysis', { state: { imageData } });
+    setShowPhotoConfirm(true);
+  };
+
+  const handleConfirmPhoto = () => {
+    if (capturedPhoto) {
+      setShowPhotoConfirm(false);
+      navigate('/water-analysis', { state: { imageData: capturedPhoto } });
+    }
+  };
+
+  const handleRetakePhoto = () => {
+    setShowPhotoConfirm(false);
+    setCapturedPhoto(null);
+    setShowCamera(true);
+  };
+
+  const handleCancelPhoto = () => {
+    setShowPhotoConfirm(false);
+    setCapturedPhoto(null);
   };
 
   const handleLogout = () => {
@@ -56,7 +73,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="bg-loom-10 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
+    <div className="bg-gray-50 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
       {/* Header */}
       <header className="bg-white shadow-sm relative flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -92,12 +109,12 @@ export default function HomePage() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col max-w-3xl w-full mx-auto px-4 py-4 overflow-hidden">
         {/* Módulos Grid 2x2 - ocupan toda la altura disponible */}
-        <div className="flex-1 grid grid-cols-2 gap-3 min-h-0">
+        <div className="flex-1 grid grid-cols-2 gap-4 min-h-0">
           {modules.map((module) => (
             <button
               key={module.id}
               onClick={() => handleModuleClick(module.id)}
-              className="bg-loom hover:bg-loom-70 text-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+              className="bg-loom text-white rounded-2xl shadow-[0_20px_60px_-10px_rgba(0,0,0,0.3),0_10px_30px_-5px_rgba(0,78,168,0.5)] active:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.3)] active:scale-95 transition-all duration-150 flex items-center justify-center border-2 border-black/10"
             >
               <h3 className="text-4xl sm:text-5xl font-bold">
                 {module.name}
@@ -105,24 +122,6 @@ export default function HomePage() {
             </button>
           ))}
         </div>
-
-        {/* Foto capturada */}
-        {capturedPhoto && (
-          <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold mb-4">Última foto capturada</h3>
-            <img
-              src={capturedPhoto}
-              alt="Captured"
-              className="w-full rounded-lg"
-            />
-            <button
-              onClick={() => setCapturedPhoto(null)}
-              className="mt-4 w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
-            >
-              Eliminar
-            </button>
-          </div>
-        )}
       </main>
 
       {/* Camera Modal */}
@@ -133,10 +132,13 @@ export default function HomePage() {
         />
       )}
 
-      {/* Mix Modal */}
-      {showMix && (
-        <AccelerometerBall
-          onClose={() => setShowMix(false)}
+      {/* Photo Confirmation Modal */}
+      {showPhotoConfirm && capturedPhoto && (
+        <PhotoConfirm
+          imageData={capturedPhoto}
+          onConfirm={handleConfirmPhoto}
+          onRetake={handleRetakePhoto}
+          onCancel={handleCancelPhoto}
         />
       )}
     </div>

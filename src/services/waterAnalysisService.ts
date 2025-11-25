@@ -57,35 +57,35 @@ const generateRecommendations = (hardness: number, ph: number): string[] => {
   // Hardness recommendations
   if (hardness > 8) {
     recommendations.push(
-      '💧 Dureza alta: Usar un ablandador de agua o mezclar con agua destilada'
+      'Dureza alta: Usar un ablandador de agua o mezclar con agua destilada'
     );
   } else if (hardness > 4) {
     recommendations.push(
-      '💧 Dureza moderada: Considera usar agua filtrada para mejorar la calidad'
+      'Dureza moderada: Considera usar agua filtrada para mejorar la calidad'
     );
   } else {
-    recommendations.push('✅ Dureza óptima: El agua está perfecta en este aspecto');
+    recommendations.push('Dureza óptima: El agua está perfecta en este aspecto');
   }
 
   // pH recommendations
   if (ph < 6.5) {
     recommendations.push(
-      '🔵 pH bajo (ácido): Añade bicarbonato de sodio gradualmente para subir el pH'
+      'pH bajo (ácido): Añade bicarbonato de sodio gradualmente para subir el pH'
     );
   } else if (ph > 7.5) {
     recommendations.push(
-      '🔴 pH alto (alcalino): Usa ácido cítrico o vinagre blanco para bajar el pH'
+      'pH alto (alcalino): Usa ácido cítrico o vinagre blanco para bajar el pH'
     );
   } else {
-    recommendations.push('✅ pH óptimo: El nivel de acidez es ideal');
+    recommendations.push('pH óptimo: El nivel de acidez es ideal');
   }
 
   // General recommendation
   if (hardness <= 4 && ph >= 6.5 && ph <= 7.5) {
-    recommendations.push('🌟 ¡Perfecto! Tu agua está en condiciones óptimas');
+    recommendations.push('Perfecto: Tu agua está en condiciones óptimas');
   } else {
     recommendations.push(
-      '📊 Realiza ajustes graduales y vuelve a medir después de 24 horas'
+      'Realiza ajustes graduales y vuelve a medir después de 24 horas'
     );
   }
 

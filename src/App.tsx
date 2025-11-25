@@ -6,6 +6,8 @@ import Splash from './components/Splash';
 import { Login } from './components/Login';
 import HomePage from './pages/HomePage';
 import WaterAnalysisPage from './pages/WaterAnalysisPage';
+import MixPage from './pages/MixPage';
+import InstallPWA from './components/InstallPWA';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,12 +71,23 @@ function App() {
             }
           />
           <Route
+            path="/mix"
+            element={
+              isAuthenticated ? (
+                <MixPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
             path="/"
             element={
               <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
             }
           />
         </Routes>
+        <InstallPWA />
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
