@@ -71,22 +71,26 @@ export default function MixPage() {
     }, []);
 
     // Solicitar permisos manualmente (para iOS)
-    const handleRequestPermission = (e: React.MouseEvent) => {
+    const handleRequestPermission = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         
-        if (requestPermission) {
-            requestPermission()
-                .then((granted) => {
-                    console.log('Permiso concedido:', granted);
-                    if (!granted) {
-                        alert('No se pudo activar el acelerómetro. Puedes usar el botón "Calcular MIX" en su lugar.');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error al solicitar permiso:', error);
-                    alert('Error al activar el acelerómetro. Puedes usar el botón "Calcular MIX" en su lugar.');
-                });
+        if (!requestPermission) {
+            console.error('requestPermission no disponible');
+            return;
+        }
+
+        try {
+            console.log('Solicitando permiso...');
+            const granted = await requestPermission();
+            console.log('Resultado:', granted);
+            
+            if (!granted) {
+                console.warn('Permiso denegado');
+            }
+        } catch (error) {
+            console.error('Error en handleRequestPermission:', error);
+            // No mostrar alert aquí, solo log
         }
     };
 

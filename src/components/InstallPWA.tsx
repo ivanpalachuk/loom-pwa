@@ -33,11 +33,16 @@ const isInStandaloneMode = () => {
 export default function InstallPWA() {
     const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
     const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+    const [iosDismissed, setIosDismissed] = useState(() => {
+        return localStorage.getItem('ios-install-dismissed') === 'true' || 
+               localStorage.getItem('chrome-ios-install-dismissed') === 'true';
+    });
     
     // Calcular si mostrar instrucciones iOS
     const shouldShowIOSInstructions = !isInStandaloneMode() && 
-                                      (isIOS() && isSafari() && !localStorage.getItem('ios-install-dismissed')) ||
-                                      (isChromeIOS() && !localStorage.getItem('chrome-ios-install-dismissed'));
+                                      !iosDismissed &&
+                                      (isIOS() && isSafari()) ||
+                                      isChromeIOS();
 
     useEffect(() => {
         // No configurar listener si ya está instalada
@@ -80,7 +85,7 @@ export default function InstallPWA() {
         } else {
             localStorage.setItem('ios-install-dismissed', 'true');
         }
-        window.location.reload(); // Recargar para actualizar el estado
+        setIosDismissed(true);
     };
 
     // Mostrar prompt de Android/Chrome Desktop
