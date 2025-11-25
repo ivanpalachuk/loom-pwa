@@ -2,20 +2,20 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { registerSW } from 'virtual:pwa-register'
 
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((registration) => {
-        console.log('SW registered:', registration);
-      })
-      .catch((error) => {
-        console.log('SW registration failed:', error);
-      });
-  });
-}
+// Registrar Service Worker automáticamente con vite-plugin-pwa
+const updateSW = registerSW({
+  onNeedRefresh() {
+    // Mostrar notificación cuando hay una nueva versión
+    if (confirm('Nueva versión disponible. ¿Recargar?')) {
+      updateSW(true)
+    }
+  },
+  onOfflineReady() {
+    console.log('App lista para trabajar offline')
+  },
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

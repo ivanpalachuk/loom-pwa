@@ -13,7 +13,9 @@ export async function checkCameraPermission(): Promise<PermissionStatus> {
     }
 
     // Verificar permiso de cámara
-    const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
+    const result = await navigator.permissions.query({
+      name: 'camera' as PermissionName,
+    });
     return result.state as PermissionStatus;
   } catch (error) {
     console.warn('No se pudo verificar el permiso de cámara:', error);
@@ -80,10 +82,10 @@ export async function requestAccelerometerPermission(): Promise<PermissionStatus
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await (DeviceMotionEvent as any).requestPermission();
-    
+
     // Guardar la decisión
     localStorage.setItem('accelerometer-permission', response);
-    
+
     return response as PermissionStatus;
   } catch (error) {
     console.error('Error al solicitar permiso de acelerómetro:', error);
@@ -119,9 +121,12 @@ export interface PermissionsInfo {
  * Obtiene información completa sobre todos los permisos
  */
 export async function getPermissionsInfo(): Promise<PermissionsInfo> {
-  const cameraSupported = 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
-  const cameraStatus = cameraSupported ? await checkCameraPermission() : 'unsupported';
-  
+  const cameraSupported =
+    'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
+  const cameraStatus = cameraSupported
+    ? await checkCameraPermission()
+    : 'unsupported';
+
   return {
     camera: {
       supported: cameraSupported,

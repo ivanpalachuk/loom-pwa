@@ -37,17 +37,17 @@ const determineQuality = (
   const phOptimal = ph >= 6.5 && ph <= 7.5;
 
   if (hardnessOptimal && phOptimal) return 'excellent';
-  
+
   const hardnessAcceptable = hardness <= 8;
   const phAcceptable = ph >= 6.0 && ph <= 8.0;
-  
+
   if (hardnessAcceptable && phAcceptable) return 'good';
-  
+
   const hardnessTolerable = hardness <= 10;
   const phTolerable = ph >= 5.5 && ph <= 8.5;
-  
+
   if (hardnessTolerable && phTolerable) return 'fair';
-  
+
   return 'poor';
 };
 
@@ -64,7 +64,9 @@ const generateRecommendations = (hardness: number, ph: number): string[] => {
       'Dureza moderada: Considera usar agua filtrada para mejorar la calidad'
     );
   } else {
-    recommendations.push('Dureza óptima: El agua está perfecta en este aspecto');
+    recommendations.push(
+      'Dureza óptima: El agua está perfecta en este aspecto'
+    );
   }
 
   // pH recommendations
