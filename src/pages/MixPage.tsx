@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, FieldArray } from 'formik';
-import { useAccelerometer } from '../hooks/useAccelerometer';
+// import { useAccelerometer } from '../hooks/useAccelerometer';
 
 interface Chemical {
     name: string;
@@ -40,59 +40,60 @@ export default function MixPage() {
     const navigate = useNavigate();
     const [showResult, setShowResult] = useState(false);
     const [mixResult, setMixResult] = useState<MixResult | null>(null);
-    const [shakeCount, setShakeCount] = useState(0);
-    const [lastShakeTime, setLastShakeTime] = useState(0);
+    // const [shakeCount, setShakeCount] = useState(0);
+    // const [lastShakeTime, setLastShakeTime] = useState(0);
 
-    const accelerometerHook = useAccelerometer({
-        onShake: () => {
-            // Debounce: solo contar sacudidas separadas por al menos 300ms
-            const now = Date.now();
-            if (now - lastShakeTime < 300) return;
-            
-            if (accelerometerHook.permission === 'granted' && !showResult) {
-                setLastShakeTime(now);
-                setShakeCount(prev => prev + 1);
-            }
-        },
-        shakeThreshold: 20, // Aumentado para evitar falsos positivos
-    });
+    // TEMPORALMENTE DESACTIVADO - Funcionalidad de acelerómetro
+    // const accelerometerHook = useAccelerometer({
+    //     onShake: () => {
+    //         // Debounce: solo contar sacudidas separadas por al menos 300ms
+    //         const now = Date.now();
+    //         if (now - lastShakeTime < 300) return;
+    //         
+    //         if (accelerometerHook.permission === 'granted' && !showResult) {
+    //             setLastShakeTime(now);
+    //             setShakeCount(prev => prev + 1);
+    //         }
+    //     },
+    //     shakeThreshold: 20, // Aumentado para evitar falsos positivos
+    // });
 
-    const { requestPermission, permission } = accelerometerHook;
+    // const { requestPermission, permission } = accelerometerHook;
 
     // Solicitar permisos automáticamente al cargar (solo iOS)
-    useEffect(() => {
-        // Verificar si es iOS y requiere permiso
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const needsPermission = typeof (DeviceMotionEvent as any).requestPermission === 'function';
-        
-        if (!needsPermission) {
-            console.log('No requiere permiso de acelerómetro (Android/Desktop)');
-        }
-    }, []);
+    // useEffect(() => {
+    //     // Verificar si es iOS y requiere permiso
+    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //     const needsPermission = typeof (DeviceMotionEvent as any).requestPermission === 'function';
+    //     
+    //     if (!needsPermission) {
+    //         console.log('No requiere permiso de acelerómetro (Android/Desktop)');
+    //     }
+    // }, []);
 
     // Solicitar permisos manualmente (para iOS)
-    const handleRequestPermission = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (!requestPermission) {
-            console.error('requestPermission no disponible');
-            return;
-        }
+    // const handleRequestPermission = async (e: React.MouseEvent) => {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     
+    //     if (!requestPermission) {
+    //         console.error('requestPermission no disponible');
+    //         return;
+    //     }
 
-        try {
-            console.log('Solicitando permiso...');
-            const granted = await requestPermission();
-            console.log('Resultado:', granted);
-            
-            if (!granted) {
-                console.warn('Permiso denegado');
-            }
-        } catch (error) {
-            console.error('Error en handleRequestPermission:', error);
-            // No mostrar alert aquí, solo log
-        }
-    };
+    //     try {
+    //         console.log('Solicitando permiso...');
+    //         const granted = await requestPermission();
+    //         console.log('Resultado:', granted);
+    //         
+    //         if (!granted) {
+    //             console.warn('Permiso denegado');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error en handleRequestPermission:', error);
+    //         // No mostrar alert aquí, solo log
+    //     }
+    // };
 
     const initialValues: MixFormValues = {
         hectares: 10,
@@ -119,13 +120,13 @@ export default function MixPage() {
         setShowResult(true);
     };
 
-    // Auto-submit cuando se sacude 5 veces
-    if (shakeCount >= 5 && !showResult) {
-        const formElement = document.querySelector('form');
-        if (formElement) {
-            formElement.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-        }
-    }
+    // Auto-submit cuando se sacude 5 veces - DESACTIVADO
+    // if (shakeCount >= 5 && !showResult) {
+    //     const formElement = document.querySelector('form');
+    //     if (formElement) {
+    //         formElement.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    //     }
+    // }
 
     return (
         <div className="bg-gray-50 flex flex-col" style={{ height: '100dvh' }}>
@@ -156,8 +157,8 @@ export default function MixPage() {
                         >
                             {({ values }) => (
                                 <Form className="space-y-6">
-                                    {/* Permission Request for iOS */}
-                                    {permission === 'prompt' && (
+                                    {/* Permission Request for iOS - DESACTIVADO */}
+                                    {/* {permission === 'prompt' && (
                                         <div className="bg-yellow-50 border-2 border-yellow-400/50 rounded-xl p-4">
                                             <div className="flex items-start gap-3">
                                                 <svg className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,15 +181,15 @@ export default function MixPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                    )}
+                                    )} */}
 
-                                    {/* Shake Counter */}
-                                    {shakeCount > 0 && permission === 'granted' && (
+                                    {/* Shake Counter - DESACTIVADO */}
+                                    {/* {shakeCount > 0 && permission === 'granted' && (
                                         <div className="bg-loom-10 border-2 border-loom/20 rounded-xl p-4 text-center">
                                             <p className="text-sm text-gray-600">Sacudidas: {shakeCount}/5</p>
                                             <p className="text-xs text-gray-500 mt-1">Sacude el celular 5 veces para mezclar</p>
                                         </div>
-                                    )}
+                                    )} */}
 
                                     {/* Area Card */}
                                     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
@@ -376,7 +377,7 @@ export default function MixPage() {
                                 <button
                                     onClick={() => {
                                         setShowResult(false);
-                                        setShakeCount(0);
+                                        // setShakeCount(0);
                                     }}
                                     className="flex-1 bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-semibold active:scale-95 transition-all"
                                 >

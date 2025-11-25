@@ -41,8 +41,7 @@ export default function InstallPWA() {
     // Calcular si mostrar instrucciones iOS
     const shouldShowIOSInstructions = !isInStandaloneMode() && 
                                       !iosDismissed &&
-                                      (isIOS() && isSafari()) ||
-                                      isChromeIOS();
+                                      ((isIOS() && isSafari()) || isChromeIOS());
 
     useEffect(() => {
         // No configurar listener si ya está instalada
