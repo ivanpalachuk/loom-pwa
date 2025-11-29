@@ -6,6 +6,7 @@ import Splash from './components/Splash';
 import { Login } from './components/Login';
 import HomePage from './pages/HomePage';
 import WaterAnalysisPage from './pages/WaterAnalysisPage';
+import WaterHistoryPage from './pages/WaterHistoryPage';
 import MixPage from './pages/MixPage';
 import InstallPWA from './components/InstallPWA';
 
@@ -65,6 +66,26 @@ function App() {
             element={
               isAuthenticated ? (
                 <WaterAnalysisPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/water-analysis/:id"
+            element={
+              isAuthenticated ? (
+                <WaterAnalysisPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/water-history"
+            element={
+              isAuthenticated ? (
+                <WaterHistoryPage />
               ) : (
                 <Navigate to="/login" replace />
               )

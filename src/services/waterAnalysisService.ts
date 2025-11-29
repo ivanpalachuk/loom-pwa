@@ -1,9 +1,38 @@
 export interface WaterQualityData {
-  hardness: number; // GH (German Hardness) in dGH
   ph: number; // pH level
+  alkalinity: number; // Alcalinidad en ppm (mg/L CaCO3)
+  hardness: number; // Dureza en ppm (mg/L CaCO3)
   quality: 'excellent' | 'good' | 'fair' | 'poor';
   recommendations: string[];
 }
+
+// Rangos para cada parámetro
+export const PARAMETER_RANGES = {
+  ph: {
+    min: 4,
+    max: 10,
+    optimalMin: 6,
+    optimalMax: 7,
+    unit: '',
+    label: 'pH'
+  },
+  alkalinity: {
+    min: 0,
+    max: 500,
+    optimalMin: 50,
+    optimalMax: 150,
+    unit: 'ppm',
+    label: 'Alcalinidad'
+  },
+  hardness: {
+    min: 0,
+    max: 500,
+    optimalMin: 0,
+    optimalMax: 150,
+    unit: 'ppm',
+    label: 'Dureza'
+  }
+};
 
 /**
  * Simulates analysis of water test strips from a photo.
@@ -14,104 +43,100 @@ export interface WaterQualityData {
  */
 export const analyzeWaterStrip = (_imageData: string): WaterQualityData => {
   // Simulate analysis with random but realistic values
-  // In production, this would analyze the actual image (_imageData)
-  const hardness = parseFloat((Math.random() * 12).toFixed(1)); // 0-12 dGH
-  const ph = parseFloat((6.0 + Math.random() * 3).toFixed(1)); // 6.0-9.0
+  const ph = parseFloat((4 + Math.random() * 6).toFixed(1)); // 4.0-10.0
+  const alkalinity = Math.round(Math.random() * 500); // 0-500 ppm
+  const hardness = Math.round(Math.random() * 500); // 0-500 ppm
 
-  const quality = determineQuality(hardness, ph);
-  const recommendations = generateRecommendations(hardness, ph);
+  const quality = determineQuality(ph, alkalinity, hardness);
+  const recommendations = generateRecommendations(ph, alkalinity, hardness);
 
   return {
-    hardness,
     ph,
+    alkalinity,
+    hardness,
     quality,
     recommendations,
   };
 };
 
 const determineQuality = (
-  hardness: number,
-  ph: number
+  ph: number,
+  alkalinity: number,
+  hardness: number
 ): 'excellent' | 'good' | 'fair' | 'poor' => {
-  const hardnessOptimal = hardness <= 4;
-  const phOptimal = ph >= 6.5 && ph <= 7.5;
+  const { ph: phRange, alkalinity: alkRange, hardness: hardRange } = PARAMETER_RANGES;
+  
+  const phOptimal = ph >= phRange.optimalMin && ph <= phRange.optimalMax;
+  const alkOptimal = alkalinity >= alkRange.optimalMin && alkalinity <= alkRange.optimalMax;
+  const hardOptimal = hardness >= hardRange.optimalMin && hardness <= hardRange.optimalMax;
 
-  if (hardnessOptimal && phOptimal) return 'excellent';
+  const optimalCount = [phOptimal, alkOptimal, hardOptimal].filter(Boolean).length;
 
-  const hardnessAcceptable = hardness <= 8;
-  const phAcceptable = ph >= 6.0 && ph <= 8.0;
-
-  if (hardnessAcceptable && phAcceptable) return 'good';
-
-  const hardnessTolerable = hardness <= 10;
-  const phTolerable = ph >= 5.5 && ph <= 8.5;
-
-  if (hardnessTolerable && phTolerable) return 'fair';
-
+  if (optimalCount === 3) return 'excellent';
+  if (optimalCount >= 2) return 'good';
+  if (optimalCount >= 1) return 'fair';
   return 'poor';
 };
 
-const generateRecommendations = (hardness: number, ph: number): string[] => {
+const generateRecommendations = (ph: number, alkalinity: number, hardness: number): string[] => {
   const recommendations: string[] = [];
-
-  // Hardness recommendations
-  if (hardness > 8) {
-    recommendations.push(
-      'Dureza alta: Usar un ablandador de agua o mezclar con agua destilada'
-    );
-  } else if (hardness > 4) {
-    recommendations.push(
-      'Dureza moderada: Considera usar agua filtrada para mejorar la calidad'
-    );
-  } else {
-    recommendations.push(
-      'Dureza óptima: El agua está perfecta en este aspecto'
-    );
-  }
+  const { ph: phRange, alkalinity: alkRange, hardness: hardRange } = PARAMETER_RANGES;
 
   // pH recommendations
-  if (ph < 6.5) {
+  if (ph < phRange.optimalMin) {
     recommendations.push(
-      'pH bajo (ácido): Añade bicarbonato de sodio gradualmente para subir el pH'
+      'pH bajo: Añadir corrector de pH para subir el nivel'
     );
-  } else if (ph > 7.5) {
+  } else if (ph > phRange.optimalMax) {
     recommendations.push(
-      'pH alto (alcalino): Usa ácido cítrico o vinagre blanco para bajar el pH'
+      'pH alto: Usar ácido para bajar el pH'
     );
-  } else {
-    recommendations.push('pH óptimo: El nivel de acidez es ideal');
   }
 
-  // General recommendation
-  if (hardness <= 4 && ph >= 6.5 && ph <= 7.5) {
-    recommendations.push('Perfecto: Tu agua está en condiciones óptimas');
-  } else {
+  // Alkalinity recommendations
+  if (alkalinity < alkRange.optimalMin) {
     recommendations.push(
-      'Realiza ajustes graduales y vuelve a medir después de 24 horas'
+      'Alcalinidad baja: El agua puede ser inestable, considerar buffer'
     );
+  } else if (alkalinity > alkRange.optimalMax) {
+    recommendations.push(
+      'Alcalinidad alta: Puede afectar la eficacia de productos'
+    );
+  }
+
+  // Hardness recommendations
+  if (hardness > hardRange.optimalMax) {
+    recommendations.push(
+      'Dureza alta: Considerar uso de secuestrantes o agua blanda'
+    );
+  }
+
+  if (recommendations.length === 0) {
+    recommendations.push('Agua en condiciones óptimas para aplicación');
   }
 
   return recommendations;
 };
 
-export const getQualityColor = (
-  quality: 'excellent' | 'good' | 'fair' | 'poor'
-): string => {
+// Export public version for external use
+export const getRecommendations = generateRecommendations;
+
+export const getQualityColor = (quality: string): string => {
   switch (quality) {
     case 'excellent':
-      return '#10b981'; // green
+      return '#22c55e'; // green-500
     case 'good':
-      return '#3b82f6'; // blue
+      return '#84cc16'; // lime-500
     case 'fair':
-      return '#f59e0b'; // amber
+      return '#f59e0b'; // amber-500
     case 'poor':
-      return '#ef4444'; // red
+      return '#ef4444'; // red-500
+    default:
+      return '#6b7280'; // gray-500
   }
 };
 
-export const getQualityLabel = (
-  quality: 'excellent' | 'good' | 'fair' | 'poor'
-): string => {
+export const getQualityLabel = (quality: string): string => {
   switch (quality) {
     case 'excellent':
       return 'Excelente';
@@ -120,6 +145,8 @@ export const getQualityLabel = (
     case 'fair':
       return 'Regular';
     case 'poor':
-      return 'Mala';
+      return 'Deficiente';
+    default:
+      return 'Desconocido';
   }
 };

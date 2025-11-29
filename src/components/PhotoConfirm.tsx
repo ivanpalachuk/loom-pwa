@@ -34,8 +34,7 @@ export default function PhotoConfirm({ imageData, onConfirm, onRetake, onCancel 
             {/* Message */}
             <div className="px-6 py-4 bg-gradient-to-t from-black via-black/90 to-transparent flex-shrink-0">
                 <div className="text-center mb-4">
-                    <p className="text-white font-medium mb-1">¿Enviar foto para análisis?</p>
-                    <p className="text-white/70 text-sm">La imagen será analizada para detectar los parámetros de agua</p>
+                    <p className="text-white font-medium text-lg">¿La foto se ve bien?</p>
                 </div>
             </div>
 
@@ -46,13 +45,13 @@ export default function PhotoConfirm({ imageData, onConfirm, onRetake, onCancel 
                         onClick={onRetake}
                         className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
                     >
-                        Tomar otra
+                        No, saquemos otra
                     </button>
                     <button
                         onClick={onConfirm}
                         className="flex-1 px-6 py-3 bg-loom text-white rounded-lg font-medium hover:bg-loom-70 transition-colors"
                     >
-                        Enviar análisis
+                        Sí, se ve bien
                     </button>
                 </div>
             </div>
