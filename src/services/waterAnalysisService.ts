@@ -14,7 +14,7 @@ export const PARAMETER_RANGES = {
     optimalMin: 6,
     optimalMax: 7,
     unit: '',
-    label: 'pH'
+    label: 'pH',
   },
   alkalinity: {
     min: 0,
@@ -22,7 +22,7 @@ export const PARAMETER_RANGES = {
     optimalMin: 50,
     optimalMax: 150,
     unit: 'ppm',
-    label: 'Alcalinidad'
+    label: 'Alcalinidad',
   },
   hardness: {
     min: 0,
@@ -30,8 +30,8 @@ export const PARAMETER_RANGES = {
     optimalMin: 0,
     optimalMax: 150,
     unit: 'ppm',
-    label: 'Dureza'
-  }
+    label: 'Dureza',
+  },
 };
 
 /**
@@ -64,13 +64,21 @@ const determineQuality = (
   alkalinity: number,
   hardness: number
 ): 'excellent' | 'good' | 'fair' | 'poor' => {
-  const { ph: phRange, alkalinity: alkRange, hardness: hardRange } = PARAMETER_RANGES;
-  
-  const phOptimal = ph >= phRange.optimalMin && ph <= phRange.optimalMax;
-  const alkOptimal = alkalinity >= alkRange.optimalMin && alkalinity <= alkRange.optimalMax;
-  const hardOptimal = hardness >= hardRange.optimalMin && hardness <= hardRange.optimalMax;
+  const {
+    ph: phRange,
+    alkalinity: alkRange,
+    hardness: hardRange,
+  } = PARAMETER_RANGES;
 
-  const optimalCount = [phOptimal, alkOptimal, hardOptimal].filter(Boolean).length;
+  const phOptimal = ph >= phRange.optimalMin && ph <= phRange.optimalMax;
+  const alkOptimal =
+    alkalinity >= alkRange.optimalMin && alkalinity <= alkRange.optimalMax;
+  const hardOptimal =
+    hardness >= hardRange.optimalMin && hardness <= hardRange.optimalMax;
+
+  const optimalCount = [phOptimal, alkOptimal, hardOptimal].filter(
+    Boolean
+  ).length;
 
   if (optimalCount === 3) return 'excellent';
   if (optimalCount >= 2) return 'good';
@@ -78,19 +86,23 @@ const determineQuality = (
   return 'poor';
 };
 
-const generateRecommendations = (ph: number, alkalinity: number, hardness: number): string[] => {
+const generateRecommendations = (
+  ph: number,
+  alkalinity: number,
+  hardness: number
+): string[] => {
   const recommendations: string[] = [];
-  const { ph: phRange, alkalinity: alkRange, hardness: hardRange } = PARAMETER_RANGES;
+  const {
+    ph: phRange,
+    alkalinity: alkRange,
+    hardness: hardRange,
+  } = PARAMETER_RANGES;
 
   // pH recommendations
   if (ph < phRange.optimalMin) {
-    recommendations.push(
-      'pH bajo: Añadir corrector de pH para subir el nivel'
-    );
+    recommendations.push('pH bajo: Añadir corrector de pH para subir el nivel');
   } else if (ph > phRange.optimalMax) {
-    recommendations.push(
-      'pH alto: Usar ácido para bajar el pH'
-    );
+    recommendations.push('pH alto: Usar ácido para bajar el pH');
   }
 
   // Alkalinity recommendations

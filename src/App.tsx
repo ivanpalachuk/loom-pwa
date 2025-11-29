@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Splash from './components/Splash';
-import { Login } from './components/Login';
+import { LoginContainer } from './modules/auth';
 import HomePage from './pages/HomePage';
 import WaterAnalysisPage from './pages/WaterAnalysisPage';
 import WaterHistoryPage from './pages/WaterHistoryPage';
@@ -47,7 +47,7 @@ function App() {
               isAuthenticated ? (
                 <Navigate to="/home" replace />
               ) : (
-                <Login onLogin={() => setIsAuthenticated(true)} />
+                <LoginContainer onLogin={() => setIsAuthenticated(true)} />
               )
             }
           />
