@@ -1,10 +1,11 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useBottomNav } from '../../contexts/BottomNavContext';
+import type { ReactElement } from 'react';
 
 interface NavItem {
     id: string;
     label: string;
-    icon: JSX.Element;
+    icon: ReactElement;
     path: string;
 }
 

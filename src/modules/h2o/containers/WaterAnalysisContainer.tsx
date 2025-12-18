@@ -276,10 +276,10 @@ export function WaterAnalysisContainer({ imageData }: WaterAnalysisContainerProp
                                         </svg>
                                     }
                                     title="Corregir mi agua"
-                                    subtitle={needsCorrection(analysis) ? "Ver productos recomendados" : "Tu agua está en rangos óptimos"}
+                                    subtitle={needsCorrection(analysis.ph, analysis.alkalinity, analysis.hardness) ? "Ver productos recomendados" : "Tu agua está en rangos óptimos"}
                                     onClick={handleCorrectWater}
-                                    disabled={!needsCorrection(analysis)}
-                                    iconBgClass={needsCorrection(analysis) ? "bg-loom/10" : "bg-gray-100"}
+                                    disabled={!needsCorrection(analysis.ph, analysis.alkalinity, analysis.hardness)}
+                                    iconBgClass={needsCorrection(analysis.ph, analysis.alkalinity, analysis.hardness) ? "bg-loom/10" : "bg-gray-100"}
                                 />
                             </ActionList>
                         </>

@@ -29,3 +29,6 @@ export interface ParameterRanges {
     alkalinity: ParameterRange;
     hardness: ParameterRange;
 }
+
+// Alias para compatibilidad con waterRecommendations
+export type WaterAnalysisResult = WaterQualityData;
