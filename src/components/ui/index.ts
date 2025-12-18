@@ -4,3 +4,4 @@ export { PageHeader } from './PageHeader';
 export { LoadingSpinner } from './LoadingSpinner';
 export { Badge, getQualityVariant, getQualityLabel } from './Badge';
 export { ActionList, ActionListItem } from './ActionListItem';
+export { BottomNav } from './BottomNav';

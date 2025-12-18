@@ -1,30 +1,33 @@
 import type { WaterQualityData, ParameterRanges } from '../types';
 
-// Rangos para cada parámetro
+// Rangos para cada parámetro según tiras InstaTest 6 en 1
 export const PARAMETER_RANGES: ParameterRanges = {
     ph: {
-        min: 4,
-        max: 10,
-        optimalMin: 6,
-        optimalMax: 7,
+        min: 6.2,
+        max: 8.4,
+        optimalMin: 6.5,
+        optimalMax: 7.5,
         unit: '',
-        label: 'pH'
+        label: 'pH',
+        possibleValues: [6.2, 6.8, 7.2, 7.8, 8.4] // Valores de las tiras InstaTest
     },
     alkalinity: {
+        min: 0,
+        max: 240,
+        optimalMin: 80,
+        optimalMax: 120,
+        unit: 'ppm',
+        label: 'Alcalinidad',
+        possibleValues: [0, 40, 80, 120, 180, 240] // Valores de las tiras InstaTest
+    },
+    hardness: {
         min: 0,
         max: 500,
         optimalMin: 50,
         optimalMax: 150,
         unit: 'ppm',
-        label: 'Alcalinidad'
-    },
-    hardness: {
-        min: 0,
-        max: 500,
-        optimalMin: 0,
-        optimalMax: 150,
-        unit: 'ppm',
-        label: 'Dureza'
+        label: 'Dureza',
+        possibleValues: [0, 50, 120, 250, 500] // Valores de las tiras InstaTest
     }
 };
 
@@ -77,13 +80,17 @@ const determineQuality = (ph: number, alkalinity: number, hardness: number): Wat
 };
 
 /**
- * Simula análisis de tira reactiva desde foto
+ * Simula análisis de tira reactiva desde foto usando valores de InstaTest
  */
 export const analyzeWaterStrip = (_imageData: string): WaterQualityData => {
-    // Simular con valores aleatorios realistas
-    const ph = parseFloat((4 + Math.random() * 6).toFixed(1));
-    const alkalinity = Math.round(Math.random() * 500);
-    const hardness = Math.round(Math.random() * 500);
+    // Simular con valores posibles de tiras InstaTest
+    const phValues = PARAMETER_RANGES.ph.possibleValues!;
+    const alkValues = PARAMETER_RANGES.alkalinity.possibleValues!;
+    const hardValues = PARAMETER_RANGES.hardness.possibleValues!;
+    
+    const ph = phValues[Math.floor(Math.random() * phValues.length)];
+    const alkalinity = alkValues[Math.floor(Math.random() * alkValues.length)];
+    const hardness = hardValues[Math.floor(Math.random() * hardValues.length)];
 
     return {
         ph,

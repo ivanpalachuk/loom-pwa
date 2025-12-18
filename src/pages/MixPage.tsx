@@ -142,7 +142,7 @@ export default function MixPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
-                        <h1 className="text-xl font-bold text-loom">Generar MIX</h1>
+                        <h1 className="text-xl font-bold text-loom">Generar CALDO</h1>
                     </div>
                 </div>
             </header>
@@ -301,7 +301,7 @@ export default function MixPage() {
                                         type="submit"
                                         className="w-full bg-loom text-white py-4 px-6 rounded-xl font-semibold shadow-[0_8px_30px_rgb(0,78,168,0.3)] active:scale-95 transition-all text-lg"
                                     >
-                                        Calcular MIX
+                                        Calcular CALDO
                                     </button>
                                 </Form>
                             )}
@@ -318,7 +318,7 @@ export default function MixPage() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </div>
-                                    <h2 className="text-xl font-bold text-gray-800">MIX Calculado</h2>
+                                    <h2 className="text-xl font-bold text-gray-800">CALDO Calculado</h2>
                                 </div>
 
                                 <div className="bg-loom-10 rounded-xl p-4">
@@ -351,7 +351,7 @@ export default function MixPage() {
 
                             {/* Instructions */}
                             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                                <h3 className="text-lg font-bold text-gray-800 mb-4">Instrucciones de mezcla</h3>
+                                <h3 className="text-lg font-bold text-gray-800 mb-4">Instrucciones de preparación</h3>
                                 <ol className="space-y-3">
                                     <li className="flex items-start gap-3">
                                         <span className="flex-shrink-0 w-6 h-6 bg-loom text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
@@ -363,7 +363,7 @@ export default function MixPage() {
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="flex-shrink-0 w-6 h-6 bg-loom text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
-                                        <p className="text-gray-700">Mezclar durante 5 minutos antes de aplicar</p>
+                                        <p className="text-gray-700">Agitar durante 5 minutos antes de aplicar</p>
                                     </li>
                                     <li className="flex items-start gap-3">
                                         <span className="flex-shrink-0 w-6 h-6 bg-loom text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
@@ -381,7 +381,7 @@ export default function MixPage() {
                                     }}
                                     className="flex-1 bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-semibold active:scale-95 transition-all"
                                 >
-                                    Nueva mezcla
+                                    Nuevo caldo
                                 </button>
                                 <button
                                     onClick={() => navigate('/home')}

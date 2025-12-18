@@ -8,21 +8,21 @@ export const MODULES: Module[] = [
     {
         id: 'h2o',
         name: 'H2O',
-        description: 'Gestión de agua'
+        description: 'Análisis de calidad de agua para riego'
     },
     {
         id: 'mix',
         name: 'MIX',
-        description: 'Mezclas y fórmulas'
+        description: 'Calculadora de caldo y dosis'
     },
     {
         id: 'unknown',
         name: '?',
-        description: 'Próximamente'
+        description: 'Preguntas y respuestas'
     },
     {
         id: 'ecommerce',
-        name: 'E-COM',
-        description: 'Comercio electrónico'
+        name: 'TIENDA',
+        description: 'Productos de protección agrícola'
     }
 ];

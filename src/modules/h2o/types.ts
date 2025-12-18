@@ -21,6 +21,7 @@ export interface ParameterRange {
     optimalMax: number;
     unit: string;
     label: string;
+    possibleValues?: number[]; // Valores discretos de las tiras InstaTest
 }
 
 export interface ParameterRanges {

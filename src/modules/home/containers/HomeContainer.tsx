@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Camera from '../../../components/Camera';
 import PhotoConfirm from '../../../components/PhotoConfirm';
 import { H2OModal } from '../../h2o/components';
 import { ModuleGrid, HeaderMenu } from '../components';
 import { MODULES } from '../types';
+import { useBottomNav } from '../../../contexts/BottomNavContext';
 
 export function HomeContainer() {
     const navigate = useNavigate();
+    const { hide: hideBottomNav, show: showBottomNav } = useBottomNav();
     
     // Estados de UI
     const [showMenu, setShowMenu] = useState(false);
@@ -18,6 +20,15 @@ export function HomeContainer() {
     const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
     const [showPhotoConfirm, setShowPhotoConfirm] = useState(false);
 
+    // Controlar visibilidad del BottomNav cuando se abre/cierra la cámara
+    useEffect(() => {
+        if (showCamera || showPhotoConfirm) {
+            hideBottomNav();
+        } else {
+            showBottomNav();
+        }
+    }, [showCamera, showPhotoConfirm, hideBottomNav, showBottomNav]);
+
     const handleModuleClick = (moduleId: string) => {
         switch (moduleId) {
             case 'h2o':
@@ -25,6 +36,9 @@ export function HomeContainer() {
                 break;
             case 'mix':
                 navigate('/mix');
+                break;
+            case 'ecommerce':
+                navigate('/ecom');
                 break;
             default:
                 console.log(`Módulo ${moduleId} - Próximamente`);

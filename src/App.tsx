@@ -8,7 +8,12 @@ import HomePage from './pages/HomePage';
 import WaterAnalysisPage from './pages/WaterAnalysisPage';
 import WaterHistoryPage from './pages/WaterHistoryPage';
 import MixPage from './pages/MixPage';
+import { EComPage } from './pages/EComPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
+import { CartPage } from './pages/CartPage';
 import InstallPWA from './components/InstallPWA';
+import { BottomNav } from './components/ui';
+import { BottomNavProvider } from './contexts/BottomNavContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,7 +44,8 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <BottomNavProvider>
+        <BrowserRouter>
         <Routes>
           <Route
             path="/login"
@@ -102,14 +108,91 @@ function App() {
             }
           />
           <Route
+            path="/ecom"
+            element={
+              isAuthenticated ? (
+                <EComPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/ecom/product/:id"
+            element={
+              isAuthenticated ? (
+                <ProductDetailPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/ecom/cart"
+            element={
+              isAuthenticated ? (
+                <CartPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              isAuthenticated ? (
+                <div className="flex items-center justify-center h-screen bg-gray-50">
+                  <div className="text-center">
+                    <h1 className="text-2xl font-bold text-loom mb-2">Perfil</h1>
+                    <p className="text-gray-600">Próximamente</p>
+                  </div>
+                </div>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/mapa"
+            element={
+              isAuthenticated ? (
+                <div className="flex items-center justify-center h-screen bg-gray-50">
+                  <div className="text-center">
+                    <h1 className="text-2xl font-bold text-loom mb-2">Mapa</h1>
+                    <p className="text-gray-600">Próximamente</p>
+                  </div>
+                </div>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/contacto"
+            element={
+              isAuthenticated ? (
+                <div className="flex items-center justify-center h-screen bg-gray-50">
+                  <div className="text-center">
+                    <h1 className="text-2xl font-bold text-loom mb-2">Contacto</h1>
+                    <p className="text-gray-600">Próximamente</p>
+                  </div>
+                </div>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
             path="/"
             element={
               <Navigate to={isAuthenticated ? "/home" : "/login"} replace />
             }
           />
         </Routes>
+        {isAuthenticated && <BottomNav />}
         <InstallPWA />
       </BrowserRouter>
+      </BottomNavProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
