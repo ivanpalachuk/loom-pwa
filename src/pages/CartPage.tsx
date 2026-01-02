@@ -53,7 +53,7 @@ export function CartPage() {
     const isEmpty = cart.items.length === 0;
 
     return (
-        <div className="bg-gray-50" style={{ minHeight: '100dvh' }}>
+        <div className="min-h-screen bg-gray-50">
             <PageHeader 
                 title="Carrito de Compras" 
                 onBack={() => navigate('/ecom')}

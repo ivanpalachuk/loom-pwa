@@ -42,7 +42,7 @@ export function ProductsContainer() {
     };
 
     return (
-        <div className="flex flex-col bg-gray-50" style={{ height: '100dvh' }}>
+        <div className="flex flex-col h-screen bg-gray-50">
             {/* Header fijo con patrón Loom */}
             <PageHeader 
                 title="Tienda" 

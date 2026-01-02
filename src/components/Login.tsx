@@ -26,7 +26,7 @@ export function Login({ onLogin }: LoginProps) {
   };
 
   return (
-    <div className={`bg-white flex items-center justify-center px-4 transition-opacity duration-700 ${fadeIn ? 'opacity-100' : 'opacity-0'}`} style={{ minHeight: '100dvh' }}>
+    <div className={`min-h-screen bg-white flex items-center justify-center px-4 transition-opacity duration-700 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img

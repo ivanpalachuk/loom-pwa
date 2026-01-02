@@ -26,23 +26,13 @@ export default function Splash({ onFinish }: SplashProps) {
 
   return (
     <div
-      className={`flex items-center justify-center p-4 transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'
+      className={`fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'
         }`}
       style={{
-        height: '100dvh',
-        width: '100vw',
-        position: 'fixed',
-        top: 0,
-        left: 0,
         backgroundImage: 'url(/patron_loom_01.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundColor: '#004EA8',
-        // Soporte para dispositivos con notch
-        paddingTop: 'max(1rem, env(safe-area-inset-top))',
-        paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
-        paddingLeft: 'max(1rem, env(safe-area-inset-left))',
-        paddingRight: 'max(1rem, env(safe-area-inset-right))'
+        backgroundColor: '#004EA8'
       }}
     >
       <div className="text-center animate-[pulse_2s_ease-in-out_infinite]">
