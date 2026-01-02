@@ -25,6 +25,20 @@ export const useCamera = (): UseCameraReturn => {
     try {
       setError(null);
       
+      // Verificar primero si ya tenemos permisos para evitar solicitarlos cada vez
+      if ('permissions' in navigator) {
+        try {
+          const permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
+          if (permissionStatus.state === 'denied') {
+            setError('Permisos de cámara denegados. Por favor, habilita los permisos en la configuración de tu navegador.');
+            return;
+          }
+        } catch (permErr) {
+          // Si la API de permisos no está disponible, continuar normalmente
+          console.log('Permissions API not available, continuing with getUserMedia', permErr);
+        }
+      }
+      
       // Configuración optimizada para móviles
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
