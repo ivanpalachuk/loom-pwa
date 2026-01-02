@@ -104,16 +104,11 @@ export function LoginContainer({ onLogin }: LoginContainerProps) {
                         </form>
 
                         <div className="mt-6">
-                            <div className="relative">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-gray-300" />
-                                </div>
-                                <div className="relative flex justify-center text-sm">
-                                    <span className="px-2 bg-white text-gray-500">¿No tienes cuenta?</span>
-                                </div>
+                            <div className="text-center text-sm text-gray-500 mb-4">
+                                ¿No tienes cuenta?
                             </div>
 
-                            <div className="mt-6">
+                            <div>
                                 <a
                                     href="#"
                                     className="w-full flex justify-center py-3 px-4 border border-loom rounded-lg shadow-sm text-base font-medium text-loom bg-white hover:bg-gray-50 transition-colors"

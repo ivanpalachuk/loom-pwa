@@ -6,14 +6,6 @@ body {
   font-family: 'Loos', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Soporte para dispositivos con notch */
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-
-/* Asegurar que elementos de pantalla completa respeten el safe area */
-.fixed, .absolute {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Colores Corporativos Loom - Tailwind v4 */

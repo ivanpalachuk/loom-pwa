@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, FieldArray } from 'formik';
+import { PageHeader } from '../components/ui';
 // import { useAccelerometer } from '../hooks/useAccelerometer';
 
 interface Chemical {
@@ -131,21 +132,12 @@ export default function MixPage() {
     return (
         <div className="bg-gray-50 flex flex-col" style={{ height: '100dvh' }}>
             {/* Header */}
-            <header className="bg-white shadow-sm flex-shrink-0">
-                <div className="max-w-3xl mx-auto px-4 py-4">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => navigate('/home')}
-                            className="p-2 text-gray-600 hover:text-loom transition-colors"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <h1 className="text-xl font-bold text-loom">Generar CALDO</h1>
-                    </div>
-                </div>
-            </header>
+            <PageHeader 
+                title="Generar CALDO" 
+                onBack={() => navigate('/home')}
+                transparent={true}
+                withPattern={true}
+            />
 
             {/* Main Content */}
             <main className="flex-1 overflow-auto">
