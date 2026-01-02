@@ -51,38 +51,24 @@ export function PageHeader({ title, onBack, backTo, rightContent, action, transp
 
     if (withPattern) {
         return (
-            <>
-                {/* Extensión del color de fondo para cubrir el notch */}
-                <div 
-                    className="bg-gradient-to-br from-loom to-loom-70" 
-                    style={{ 
-                        height: 'env(safe-area-inset-top)',
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        zIndex: 40
-                    }}
-                />
-                <div 
-                    className="relative bg-gradient-to-br from-loom to-loom-70 overflow-hidden flex-shrink-0" 
-                    style={{ 
-                        paddingTop: 'env(safe-area-inset-top)'
-                    }}
-                >
-                    <div className="absolute inset-0 opacity-30">
-                        <img 
-                            src="/patron-03.png" 
-                            alt="Patrón Loom" 
-                            className="w-full h-full object-cover"
-                            style={{ objectPosition: 'center' }}
-                        />
-                    </div>
-                    <div className="relative z-10">
-                        {headerContent}
-                    </div>
+            <div 
+                className="relative bg-gradient-to-br from-loom to-loom-70 overflow-hidden flex-shrink-0" 
+                style={{ 
+                    paddingTop: 'env(safe-area-inset-top)'
+                }}
+            >
+                <div className="absolute inset-0 opacity-30">
+                    <img 
+                        src="/patron-03.png" 
+                        alt="Patrón Loom" 
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: 'center' }}
+                    />
                 </div>
-            </>
+                <div className="relative z-10">
+                    {headerContent}
+                </div>
+            </div>
         );
     }
 
