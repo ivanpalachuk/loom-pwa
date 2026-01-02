@@ -25,8 +25,8 @@ export function PageHeader({ title, onBack, backTo, rightContent, action, transp
     };
 
     const headerContent = (
-        <header className={`flex-shrink-0 ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-            <div className="max-w-3xl mx-auto px-4 py-4">
+        <header className={`flex-shrink-0 ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'}`}>
+            <div className="max-w-3xl mx-auto px-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <button
@@ -53,7 +53,6 @@ export function PageHeader({ title, onBack, backTo, rightContent, action, transp
         return (
             <div 
                 className="relative bg-gradient-to-br from-loom to-loom-70 overflow-hidden flex-shrink-0"
-                style={{ paddingTop: 'env(safe-area-inset-top)' }}
             >
                 <div className="absolute inset-0 opacity-30">
                     <img 

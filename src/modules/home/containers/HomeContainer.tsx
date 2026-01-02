@@ -90,8 +90,8 @@ export function HomeContainer() {
     return (
         <div className="bg-gray-50 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
             {/* Header */}
-            <header className="bg-white shadow-sm relative flex-shrink-0" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <header className="bg-white shadow-sm relative flex-shrink-0">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[calc(env(safe-area-inset-top)+1rem)] pb-4">
                     <div className="flex items-center justify-between">
                         <img src="/logotest.png" alt="Loom" className="h-12" />
                         <HeaderMenu
