@@ -8,6 +8,8 @@ interface UseCameraReturn {
   capturedImage: string | null;
   startCamera: () => Promise<void>;
   stopCamera: () => void;
+  pauseCamera: () => void;
+  resumeCamera: () => Promise<void>;
   capturePhoto: () => string | null;
   clearPhoto: () => void;
 }
@@ -61,6 +63,34 @@ export const useCamera = (): UseCameraReturn => {
     }
   }, []);
 
+  // Pausar video sin detener el stream (mantiene permisos)
+  const pauseCamera = useCallback(() => {
+    if (videoRef.current && streamRef.current) {
+      videoRef.current.pause();
+      // Pausar los tracks pero NO detenerlos
+      streamRef.current.getTracks().forEach(track => {
+        track.enabled = false;
+      });
+      setIsStreaming(false);
+    }
+  }, []);
+
+  // Reanudar video sin pedir permisos de nuevo
+  const resumeCamera = useCallback(async () => {
+    if (streamRef.current && videoRef.current) {
+      // Reactivar tracks existentes
+      streamRef.current.getTracks().forEach(track => {
+        track.enabled = true;
+      });
+      await videoRef.current.play();
+      setIsStreaming(true);
+    } else {
+      // Si no hay stream, iniciar la cámara
+      await startCamera();
+    }
+  }, [startCamera]);
+
+  // Detener completamente la cámara (solo cuando realmente sea necesario)
   const stopCamera = useCallback(() => {
     // Primero detener todos los tracks del stream
     if (streamRef.current) {
@@ -119,6 +149,8 @@ export const useCamera = (): UseCameraReturn => {
     capturedImage,
     startCamera,
     stopCamera,
+    pauseCamera,
+    resumeCamera,
     capturePhoto,
     clearPhoto
   };

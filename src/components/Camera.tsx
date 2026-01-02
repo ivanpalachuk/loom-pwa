@@ -15,6 +15,7 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
     capturedImage,
     startCamera,
     stopCamera,
+    pauseCamera,
     capturePhoto,
     clearPhoto
   } = useCamera();
@@ -23,7 +24,8 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
     startCamera();
 
     return () => {
-      stopCamera();
+      // Pausar en lugar de detener para mantener permisos
+      pauseCamera();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -43,12 +45,12 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
     if (capturedImage && onCapture) {
       onCapture(capturedImage);
     }
-    stopCamera();
+    pauseCamera(); // Pausar en lugar de detener
     onClose?.();
   };
 
   const handleClose = () => {
-    stopCamera();
+    pauseCamera(); // Pausar en lugar de detener
     onClose?.();
   };
 
@@ -64,7 +66,7 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
           if (onCapture) {
             onCapture(base64data);
           }
-          stopCamera();
+          pauseCamera();
           onClose?.();
         };
         reader.readAsDataURL(blob);
@@ -96,7 +98,7 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
           if (onCapture) {
             onCapture(imageData);
           }
-          stopCamera();
+          pauseCamera();
           onClose?.();
         }
       });
