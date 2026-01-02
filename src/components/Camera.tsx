@@ -14,7 +14,6 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
     error,
     capturedImage,
     startCamera,
-    stopCamera,
     pauseCamera,
     capturePhoto,
     clearPhoto
