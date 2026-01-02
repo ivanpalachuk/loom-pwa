@@ -141,7 +141,7 @@ function App() {
             path="/perfil"
             element={
               isAuthenticated ? (
-                <div className="flex items-center justify-center h-screen bg-gray-50">
+                <div className="flex items-center justify-center bg-gray-50" style={{ height: '100dvh' }}>
                   <div className="text-center">
                     <h1 className="text-2xl font-bold text-loom mb-2">Perfil</h1>
                     <p className="text-gray-600">Próximamente</p>
@@ -156,7 +156,7 @@ function App() {
             path="/mapa"
             element={
               isAuthenticated ? (
-                <div className="flex items-center justify-center h-screen bg-gray-50">
+                <div className="flex items-center justify-center bg-gray-50" style={{ height: '100dvh' }}>
                   <div className="text-center">
                     <h1 className="text-2xl font-bold text-loom mb-2">Mapa</h1>
                     <p className="text-gray-600">Próximamente</p>
@@ -171,7 +171,7 @@ function App() {
             path="/contacto"
             element={
               isAuthenticated ? (
-                <div className="flex items-center justify-center h-screen bg-gray-50">
+                <div className="flex items-center justify-center bg-gray-50" style={{ height: '100dvh' }}>
                   <div className="text-center">
                     <h1 className="text-2xl font-bold text-loom mb-2">Contacto</h1>
                     <p className="text-gray-600">Próximamente</p>

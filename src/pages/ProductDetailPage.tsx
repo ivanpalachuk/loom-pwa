@@ -68,7 +68,7 @@ export function ProductDetailPage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50">
+            <div className="bg-gray-50" style={{ minHeight: '100dvh' }}>
                 <PageHeader 
                     title="Detalle del Producto" 
                     onBack={() => navigate('/ecom')}
