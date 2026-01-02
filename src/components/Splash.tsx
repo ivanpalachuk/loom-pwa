@@ -32,7 +32,9 @@ export default function Splash({ onFinish }: SplashProps) {
         backgroundImage: 'url(/patron_loom_01.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundColor: '#004EA8'
+        backgroundColor: '#004EA8',
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingBottom: 'env(safe-area-inset-bottom)'
       }}
     >
       <div className="text-center animate-[pulse_2s_ease-in-out_infinite]">

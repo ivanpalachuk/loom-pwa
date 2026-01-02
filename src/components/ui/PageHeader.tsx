@@ -25,7 +25,7 @@ export function PageHeader({ title, onBack, backTo, rightContent, action, transp
     };
 
     const headerContent = (
-        <header className={`flex-shrink-0 ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'}`}>
+        <header className={`flex-shrink-0 ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'}`} style={{ paddingTop: 'env(safe-area-inset-top)' }}>
             <div className="max-w-3xl mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
