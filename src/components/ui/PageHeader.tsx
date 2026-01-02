@@ -51,7 +51,7 @@ export function PageHeader({ title, onBack, backTo, rightContent, action, transp
 
     if (withPattern) {
         return (
-            <div className="relative bg-gradient-to-br from-loom to-loom-70 overflow-hidden flex-shrink-0">
+            <div className="relative bg-gradient-to-br from-loom to-loom-70 overflow-hidden flex-shrink-0" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
                 <div className="absolute inset-0 opacity-30">
                     <img 
                         src="/patron-03.png" 
