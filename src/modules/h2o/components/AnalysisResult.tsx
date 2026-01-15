@@ -15,20 +15,23 @@ const OPTIMAL_RANGES: Record<string, { min: number; max: number }> = {
   hardness: { min: 0, max: 120 },
 };
 
+const PARAM_LABELS: Record<string, string> = {
+  ph: 'pH',
+  alkalinity: 'Alcalinidad',
+  hardness: 'Dureza',
+};
+
+const PARAM_UNITS: Record<string, string> = {
+  ph: '',
+  alkalinity: 'ppm',
+  hardness: 'ppm',
+};
+
 export function AnalysisResult({ result }: AnalysisResultProps) {
   const { waterQuality, matches, averageConfidence } = result;
 
-  const getConfidenceColor = (confidence: number): string => {
-    if (confidence >= 80) return 'text-green-600';
-    if (confidence >= 60) return 'text-yellow-600';
-    return 'text-red-600';
-  };
-
-  const getConfidenceLabel = (confidence: number): string => {
-    if (confidence >= 80) return 'Alta';
-    if (confidence >= 60) return 'Media';
-    return 'Baja';
-  };
+  // Filtrar FCL - solo mostrar pH, alkalinity, hardness
+  const displayMatches = matches.filter(m => m.parameter !== 'fcl');
 
   const getQualityBadgeColor = (quality: string): string => {
     switch (quality) {
@@ -57,142 +60,96 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
     return value >= range.min && value <= range.max;
   };
 
+  // Calcular confianza solo de los parámetros mostrados
+  const displayConfidence = displayMatches.length > 0
+    ? Math.round(displayMatches.reduce((sum, m) => sum + m.confidence, 0) / displayMatches.length)
+    : averageConfidence;
+
   return (
     <div className="space-y-4">
-      {/* Nivel de confianza general */}
-      <div className="bg-gray-50 rounded-lg p-4 border-2 border-gray-200">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm text-gray-600">Confianza del análisis</div>
-            <div className={`text-2xl font-bold ${getConfidenceColor(averageConfidence)}`}>
-              {averageConfidence}% - {getConfidenceLabel(averageConfidence)}
+      {/* Card principal con todos los parámetros */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+        {/* Header con calidad general */}
+        <div className="bg-gradient-to-r from-loom to-loom-dark p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-white/80 text-sm">Calidad del agua</div>
+              <div className="text-white text-2xl font-bold">
+                {getQualityLabel(waterQuality.quality)}
+              </div>
+            </div>
+            <div className={`px-4 py-2 rounded-full text-white font-semibold ${getQualityBadgeColor(waterQuality.quality)}`}>
+              {displayConfidence}% confianza
             </div>
           </div>
-          <div className="relative w-16 h-16">
-            <svg className="transform -rotate-90 w-16 h-16">
-              <circle
-                cx="32"
-                cy="32"
-                r="28"
-                stroke="currentColor"
-                strokeWidth="6"
-                fill="none"
-                className="text-gray-200"
-              />
-              <circle
-                cx="32"
-                cy="32"
-                r="28"
-                stroke="currentColor"
-                strokeWidth="6"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 28}`}
-                strokeDashoffset={`${2 * Math.PI * 28 * (1 - averageConfidence / 100)}`}
-                className={getConfidenceColor(averageConfidence)}
-              />
-            </svg>
-          </div>
         </div>
-      </div>
 
-      {/* Calidad general */}
-      <div className="text-center">
-        <div
-          className={`inline-block px-6 py-3 rounded-full text-white font-bold text-lg shadow-lg ${getQualityBadgeColor(waterQuality.quality)}`}
-        >
-          Calidad: {getQualityLabel(waterQuality.quality)}
-        </div>
-      </div>
+        {/* Parámetros en una sola card */}
+        <div className="p-4">
+          <div className="flex justify-around items-start">
+            {displayMatches.map((match, index) => {
+              const isOptimal = isInOptimalRange(match.parameter, match.value);
+              const range = OPTIMAL_RANGES[match.parameter];
 
-      {/* Detalles de cada parámetro */}
-      <div className="space-y-3">
-        {matches.map((match, index) => {
-          const paramLabels: Record<string, string> = {
-            ph: 'pH',
-            alkalinity: 'Alcalinidad',
-            hardness: 'Dureza',
-          };
-
-          const paramUnits: Record<string, string> = {
-            ph: '',
-            alkalinity: 'ppm',
-            hardness: 'ppm',
-          };
-
-          const isOptimal = isInOptimalRange(match.parameter, match.value);
-          const range = OPTIMAL_RANGES[match.parameter];
-
-          return (
-            <div 
-              key={index} 
-              className={`rounded-lg p-4 shadow-md border-2 ${
-                isOptimal 
-                  ? 'bg-white border-gray-200' 
-                  : 'bg-red-50 border-red-400'
-              }`}
-            >
-              <div className="flex items-center gap-4">
-                {/* Cuadrado de color detectado - simula el pad de la tira */}
-                <div className="flex flex-col items-center">
+              return (
+                <div key={index} className="flex flex-col items-center flex-1">
+                  {/* Cuadrado de color detectado */}
                   <div
-                    className={`w-14 h-14 rounded-md border-2 shadow-inner ${
-                      isOptimal ? 'border-gray-300' : 'border-red-400'
+                    className={`w-16 h-16 rounded-lg shadow-md border-2 ${
+                      isOptimal ? 'border-green-400' : 'border-red-400'
                     }`}
                     style={{ backgroundColor: match.detectedColor }}
                   />
-                  <div className="text-[10px] text-gray-400 mt-1 font-mono">
-                    {match.detectedColor}
-                  </div>
-                </div>
-
-                {/* Información del parámetro */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-800">
-                      {paramLabels[match.parameter]}
-                    </span>
+                  
+                  {/* Información del parámetro */}
+                  <div className="text-center mt-3">
+                    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      {PARAM_LABELS[match.parameter]}
+                    </div>
+                    <div className={`text-xl font-bold mt-1 ${isOptimal ? 'text-gray-800' : 'text-red-600'}`}>
+                      {match.value}{PARAM_UNITS[match.parameter]}
+                    </div>
+                    <div className="text-[10px] text-gray-400 mt-0.5">
+                      Óptimo: {range?.min}-{range?.max}
+                    </div>
                     {!isOptimal && (
-                      <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">
-                        Fuera de rango
-                      </span>
+                      <div className="text-[10px] text-red-500 font-medium mt-1">
+                        ⚠ Fuera de rango
+                      </div>
                     )}
                   </div>
-                  <div className={`text-2xl font-bold ${isOptimal ? 'text-loom' : 'text-red-600'}`}>
-                    {match.value} {paramUnits[match.parameter]}
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-gray-500">
-                      Óptimo: {range?.min}-{range?.max} {paramUnits[match.parameter]}
-                    </span>
-                  </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
 
-                {/* Cuadrado de color referencia */}
-                <div className="flex flex-col items-center">
-                  <div className="text-[10px] text-gray-500 mb-1">Ref.</div>
-                  <div
-                    className="w-10 h-10 rounded-md border-2 border-gray-300"
-                    style={{ backgroundColor: match.referenceColor }}
-                  />
-                </div>
-              </div>
+        {/* Footer con indicadores */}
+        <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
+          <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded border-2 border-green-400 bg-green-100"></div>
+              <span>En rango</span>
             </div>
-          );
-        })}
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded border-2 border-red-400 bg-red-100"></div>
+              <span>Fuera de rango</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Advertencias si la confianza es baja */}
-      {averageConfidence < 70 && (
-        <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4">
+      {displayConfidence < 70 && (
+        <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <svg className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
             <div>
-              <div className="font-semibold text-yellow-800">Confianza baja</div>
-              <div className="text-sm text-yellow-700 mt-1">
-                Los colores detectados no coinciden perfectamente con las referencias. 
-                Considera mejorar la iluminación o ajustar las zonas de calibración.
+              <div className="font-semibold text-yellow-800 text-sm">Confianza baja</div>
+              <div className="text-xs text-yellow-700 mt-1">
+                Mejora la iluminación y centra bien la tira para mejores resultados.
               </div>
             </div>
           </div>

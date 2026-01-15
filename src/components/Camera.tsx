@@ -4,9 +4,10 @@ import { useCamera } from '../hooks/useCamera';
 interface CameraProps {
   onCapture?: (imageData: string) => void;
   onClose?: () => void;
+  showStripGuide?: boolean; // Mostrar guía para tira reactiva
 }
 
-export default function Camera({ onCapture, onClose }: CameraProps) {
+export default function Camera({ onCapture, onClose, showStripGuide = false }: CameraProps) {
   const {
     videoRef,
     canvasRef,
@@ -137,13 +138,56 @@ export default function Camera({ onCapture, onClose }: CameraProps) {
             className="max-w-full max-h-full object-contain"
           />
         ) : (
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className="max-w-full max-h-full object-contain"
-          />
+          <>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="max-w-full max-h-full object-contain"
+            />
+            
+            {/* Guía visual para tira reactiva */}
+            {showStripGuide && isStreaming && (
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                {/* Overlay oscuro con recorte para la tira */}
+                <div className="absolute inset-0 bg-black/50" />
+                
+                {/* Área de la tira (recortada) */}
+                <div className="relative z-10 flex flex-col items-center">
+                  {/* Marco de la tira */}
+                  <div 
+                    className="relative border-2 border-white rounded-lg bg-transparent"
+                    style={{ 
+                      width: '80px', 
+                      height: '280px',
+                      boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)'
+                    }}
+                  >
+                    {/* Indicadores de las 4 zonas de color */}
+                    <div className="absolute inset-x-2 top-[10%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
+                      <span className="text-[8px] text-white/80">FCL</span>
+                    </div>
+                    <div className="absolute inset-x-2 top-[30%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
+                      <span className="text-[8px] text-white/80">ALK</span>
+                    </div>
+                    <div className="absolute inset-x-2 top-[50%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
+                      <span className="text-[8px] text-white/80">pH</span>
+                    </div>
+                    <div className="absolute inset-x-2 top-[70%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
+                      <span className="text-[8px] text-white/80">TH</span>
+                    </div>
+                  </div>
+                  
+                  {/* Instrucciones */}
+                  <div className="mt-4 text-center">
+                    <p className="text-white text-sm font-medium">Centra la tira aquí</p>
+                    <p className="text-white/70 text-xs mt-1">Alinea los cuadrados de color</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         <canvas ref={canvasRef} className="hidden" />

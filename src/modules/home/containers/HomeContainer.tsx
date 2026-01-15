@@ -113,6 +113,7 @@ export function HomeContainer() {
                 <Camera
                     onCapture={handlePhotoCapture}
                     onClose={() => setShowCamera(false)}
+                    showStripGuide={true}
                 />
             )}
 
