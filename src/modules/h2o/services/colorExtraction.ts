@@ -30,39 +30,41 @@ export interface ExtractedColor {
  * 3. pH - tercer cuadrado
  * 4. TH (Dureza Total) - cuadrado inferior
  * 
- * IMPORTANTE: Estas zonas deben coincidir con la guía visual de Camera.tsx
- * La guía ocupa el centro de la pantalla con:
- * - Ancho: ~90px centrado (aprox 12% del ancho en móvil)
- * - Alto: ~360px centrado (aprox 50% del alto)
- * - Zonas a 5%, 27%, 49%, 71% desde arriba del marco
+ * IMPORTANTE: La guía en Camera.tsx tiene un marco de 90x360px centrado
+ * con zonas a 5%, 27%, 49%, 71% desde arriba del marco (cada una 14% alto)
+ * 
+ * Asumiendo que el usuario centra la tira en la pantalla:
+ * - En un móvil típico (390x844), el marco de 360px ocupa ~43% del alto
+ * - El marco empieza aprox a 28.5% desde arriba ((100-43)/2)
+ * - Cada zona del marco se traduce a: 28.5% + (zona% * 43%)
  */
 export const INSTATEST_ZONES: ColorZone[] = [
   {
-    x: 44, // Centro horizontal de la imagen
-    y: 28, // FCL - primer cuadrado (5% del marco que empieza ~25%)
-    width: 12,
-    height: 7,
+    x: 45, // Centro horizontal
+    y: 32, // FCL: 28.5% + (5% + 7%) * 43% ≈ 32%
+    width: 10,
+    height: 5,
     parameter: 'fcl',
   },
   {
-    x: 44,
-    y: 38, // Alkalinity - segundo cuadrado (27% del marco)
-    width: 12,
-    height: 7,
+    x: 45,
+    y: 42, // ALK: 28.5% + (27% + 7%) * 43% ≈ 42%
+    width: 10,
+    height: 5,
     parameter: 'alkalinity',
   },
   {
-    x: 44,
-    y: 48, // pH - tercer cuadrado (49% del marco)
-    width: 12,
-    height: 7,
+    x: 45,
+    y: 52, // pH: 28.5% + (49% + 7%) * 43% ≈ 52%
+    width: 10,
+    height: 5,
     parameter: 'ph',
   },
   {
-    x: 44,
-    y: 58, // Hardness - cuarto cuadrado (71% del marco)
-    width: 12,
-    height: 7,
+    x: 45,
+    y: 62, // TH: 28.5% + (71% + 7%) * 43% ≈ 62%
+    width: 10,
+    height: 5,
     parameter: 'hardness',
   },
 ];
@@ -154,6 +156,16 @@ export async function extractStripColors(
   zones: ColorZone[] = INSTATEST_ZONES
 ): Promise<ExtractedColor[]> {
   const canvas = await imageToCanvas(imageData);
+  
+  // Debug: log canvas size and zone positions
+  console.log('Canvas size:', canvas.width, 'x', canvas.height);
+  zones.forEach(zone => {
+    const x = Math.floor((zone.x / 100) * canvas.width);
+    const y = Math.floor((zone.y / 100) * canvas.height);
+    const w = Math.floor((zone.width / 100) * canvas.width);
+    const h = Math.floor((zone.height / 100) * canvas.height);
+    console.log(`Zone ${zone.parameter}: x=${x}, y=${y}, w=${w}, h=${h}`);
+  });
   
   return zones.map(zone => {
     const rgb = extractColorFromZone(canvas, zone);
