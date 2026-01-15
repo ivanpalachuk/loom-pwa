@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PageHeader, LoadingSpinner, ActionList, ActionListItem } from '../../../components/ui';
-import { InstaTestStrip, LocationModal, WaterProductRecommendations } from '../components';
+import { InstaTestStrip, LocationModal, WaterProductRecommendations, AnalysisResult } from '../components';
 import type { WaterQualityData } from '../types';
+import type { StripAnalysisResult } from '../services/stripAnalyzer';
 import { 
-    analyzeWaterStrip, 
+    analyzeStripPhoto,
     PARAMETER_RANGES, 
     saveAnalysis, 
     getAnalysisById,
@@ -21,6 +22,7 @@ export function WaterAnalysisContainer({ imageData }: WaterAnalysisContainerProp
     const { id } = useParams<{ id: string }>();
 
     const [analysis, setAnalysis] = useState<WaterQualityData | null>(null);
+    const [stripResult, setStripResult] = useState<StripAnalysisResult | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isFromHistory, setIsFromHistory] = useState(false);
     const [recommendations, setRecommendations] = useState<any[]>([]);
@@ -51,12 +53,18 @@ export function WaterAnalysisContainer({ imageData }: WaterAnalysisContainerProp
                 navigate('/home', { replace: true });
                 return;
             }
-            // Simular análisis
-            setTimeout(async () => {
-                const result = analyzeWaterStrip(imageData);
-                setAnalysis(result);
-                setIsLoading(false);
-            }, 1500);
+            
+            // Análisis real de la foto de la tira
+            try {
+                const result = await analyzeStripPhoto(imageData);
+                setStripResult(result);
+                setAnalysis(result.waterQuality);
+            } catch (error) {
+                console.error('Error analizando la tira:', error);
+                navigate('/home', { replace: true });
+                return;
+            }
+            setIsLoading(false);
         };
 
         loadAnalysis();
@@ -216,8 +224,13 @@ export function WaterAnalysisContainer({ imageData }: WaterAnalysisContainerProp
                         />
                     ) : analysis && (
                         <>
-                            {/* Visualización InstaTest Strip */}
-                            <InstaTestStrip data={analysis} />
+                            {/* Resultado del análisis con colores detectados */}
+                            {stripResult ? (
+                                <AnalysisResult result={stripResult} />
+                            ) : (
+                                /* Visualización InstaTest Strip para datos del historial (sin colores detectados) */
+                                <InstaTestStrip data={analysis} />
+                            )}
 
                             {/* Recomendaciones de productos - solo si se hace clic en Corregir */}
                             {showRecommendations && recommendations.length > 0 && (
