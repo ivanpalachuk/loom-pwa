@@ -8,6 +8,13 @@ interface AnalysisResultProps {
   result: StripAnalysisResult;
 }
 
+// Rangos óptimos para cada parámetro
+const OPTIMAL_RANGES: Record<string, { min: number; max: number }> = {
+  ph: { min: 7.0, max: 7.4 },
+  alkalinity: { min: 80, max: 120 },
+  hardness: { min: 0, max: 120 },
+};
+
 export function AnalysisResult({ result }: AnalysisResultProps) {
   const { waterQuality, matches, averageConfidence } = result;
 
@@ -41,6 +48,13 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
       case 'poor': return 'Pobre';
       default: return 'Desconocida';
     }
+  };
+
+  // Verifica si un valor está dentro del rango óptimo
+  const isInOptimalRange = (parameter: string, value: number): boolean => {
+    const range = OPTIMAL_RANGES[parameter];
+    if (!range) return true;
+    return value >= range.min && value <= range.max;
   };
 
   return (
@@ -105,47 +119,61 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
             hardness: 'ppm',
           };
 
-          return (
-            <div key={index} className="bg-white rounded-lg p-4 shadow-md border border-gray-200">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <div className="font-semibold text-gray-800">
-                    {paramLabels[match.parameter]}
-                  </div>
-                  <div className="text-2xl font-bold text-loom">
-                    {match.value} {paramUnits[match.parameter]}
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs text-gray-500">Confianza</div>
-                  <div className={`text-lg font-bold ${getConfidenceColor(match.confidence)}`}>
-                    {match.confidence}%
-                  </div>
-                </div>
-              </div>
+          const isOptimal = isInOptimalRange(match.parameter, match.value);
+          const range = OPTIMAL_RANGES[match.parameter];
 
-              {/* Comparación de colores */}
-              <div className="flex items-center gap-3">
-                <div className="flex-1">
-                  <div className="text-xs text-gray-500 mb-1">Color detectado</div>
+          return (
+            <div 
+              key={index} 
+              className={`rounded-lg p-4 shadow-md border-2 ${
+                isOptimal 
+                  ? 'bg-white border-gray-200' 
+                  : 'bg-red-50 border-red-400'
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                {/* Cuadrado de color detectado - simula el pad de la tira */}
+                <div className="flex flex-col items-center">
                   <div
-                    className="h-10 rounded border-2 border-gray-300"
+                    className={`w-14 h-14 rounded-md border-2 shadow-inner ${
+                      isOptimal ? 'border-gray-300' : 'border-red-400'
+                    }`}
                     style={{ backgroundColor: match.detectedColor }}
                   />
-                  <div className="text-xs text-gray-400 mt-1 font-mono">
+                  <div className="text-[10px] text-gray-400 mt-1 font-mono">
                     {match.detectedColor}
                   </div>
                 </div>
-                <div className="text-gray-400">→</div>
+
+                {/* Información del parámetro */}
                 <div className="flex-1">
-                  <div className="text-xs text-gray-500 mb-1">Color referencia</div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-gray-800">
+                      {paramLabels[match.parameter]}
+                    </span>
+                    {!isOptimal && (
+                      <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">
+                        Fuera de rango
+                      </span>
+                    )}
+                  </div>
+                  <div className={`text-2xl font-bold ${isOptimal ? 'text-loom' : 'text-red-600'}`}>
+                    {match.value} {paramUnits[match.parameter]}
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-gray-500">
+                      Óptimo: {range?.min}-{range?.max} {paramUnits[match.parameter]}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Cuadrado de color referencia */}
+                <div className="flex flex-col items-center">
+                  <div className="text-[10px] text-gray-500 mb-1">Ref.</div>
                   <div
-                    className="h-10 rounded border-2 border-gray-300"
+                    className="w-10 h-10 rounded-md border-2 border-gray-300"
                     style={{ backgroundColor: match.referenceColor }}
                   />
-                  <div className="text-xs text-gray-400 mt-1 font-mono">
-                    {match.referenceColor}
-                  </div>
                 </div>
               </div>
             </div>

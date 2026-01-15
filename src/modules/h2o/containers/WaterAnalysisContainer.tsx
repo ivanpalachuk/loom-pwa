@@ -205,8 +205,6 @@ export function WaterAnalysisContainer({ imageData }: WaterAnalysisContainerProp
             <PageHeader 
                 title="Análisis de Agua" 
                 backTo="/home" 
-                transparent={true}
-                withPattern={true}
             />
 
             <main className="flex-1 overflow-auto">

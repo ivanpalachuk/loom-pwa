@@ -26,13 +26,20 @@ export default function Splash({ onFinish }: SplashProps) {
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'
+      className={`fixed flex items-center justify-center transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'
         }`}
       style={{
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100dvh',
         backgroundImage: 'url(/patron_loom_01.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundColor: '#004EA8'
+        backgroundColor: '#004EA8',
+        zIndex: 9999,
       }}
     >
       <div className="text-center animate-[pulse_2s_ease-in-out_infinite]">

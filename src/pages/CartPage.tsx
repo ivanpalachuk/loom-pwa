@@ -57,8 +57,6 @@ export function CartPage() {
             <PageHeader 
                 title="Carrito de Compras" 
                 onBack={() => navigate('/ecom')}
-                transparent={true}
-                withPattern={true}
             />
             
             <div className="container mx-auto px-4 py-6 max-w-5xl pb-20">

@@ -7,11 +7,10 @@ interface PageHeaderProps {
     backTo?: string;
     rightContent?: ReactNode;
     action?: ReactNode;
-    transparent?: boolean;
-    withPattern?: boolean;
+    showBack?: boolean;
 }
 
-export function PageHeader({ title, onBack, backTo, rightContent, action, transparent = false, withPattern = false }: PageHeaderProps) {
+export function PageHeader({ title, onBack, backTo, rightContent, action, showBack = true }: PageHeaderProps) {
     const navigate = useNavigate();
 
     const handleBack = () => {
@@ -24,20 +23,22 @@ export function PageHeader({ title, onBack, backTo, rightContent, action, transp
         }
     };
 
-    const headerContent = (
-        <header className={`flex-shrink-0 ${transparent ? 'bg-transparent' : 'bg-white shadow-sm'}`}>
+    return (
+        <header className="bg-gradient-to-r from-loom to-loom-70 text-white flex-shrink-0">
             <div className="max-w-3xl mx-auto px-4 pt-[calc(env(safe-area-inset-top)+1rem)] pb-4">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={handleBack}
-                            className={`p-2 transition-colors ${transparent ? 'text-white hover:bg-white hover:bg-opacity-20 rounded-full' : 'text-gray-600 hover:text-loom'}`}
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                        <h1 className={`text-2xl font-extrabold ${transparent ? 'text-white' : 'text-loom'}`}>
+                    <div className="flex items-center gap-3">
+                        {showBack && (
+                            <button
+                                onClick={handleBack}
+                                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                        )}
+                        <h1 className="text-xl font-bold">
                             {title}
                         </h1>
                     </div>
@@ -48,28 +49,6 @@ export function PageHeader({ title, onBack, backTo, rightContent, action, transp
             </div>
         </header>
     );
-
-    if (withPattern) {
-        return (
-            <div 
-                className="relative bg-gradient-to-br from-loom to-loom-70 overflow-hidden flex-shrink-0"
-            >
-                <div className="absolute inset-0 opacity-30">
-                    <img 
-                        src="/patron-03.png" 
-                        alt="Patrón Loom" 
-                        className="w-full h-full object-cover"
-                        style={{ objectPosition: 'center' }}
-                    />
-                </div>
-                <div className="relative z-10">
-                    {headerContent}
-                </div>
-            </div>
-        );
-    }
-
-    return headerContent;
 }
 
 export default PageHeader;

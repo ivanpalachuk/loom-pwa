@@ -72,8 +72,6 @@ export function ProductDetailPage() {
                 <PageHeader 
                     title="Detalle del Producto" 
                     onBack={() => navigate('/ecom')}
-                    transparent={true}
-                    withPattern={true}
                 />
                 <div className="container mx-auto px-4 py-8">
                     <LoadingSpinner title="Cargando producto" subtitle="Obteniendo detalles" />

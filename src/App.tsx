@@ -11,6 +11,9 @@ import MixPage from './pages/MixPage';
 import { EComPage } from './pages/EComPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { CartPage } from './pages/CartPage';
+import ProfilePage from './pages/ProfilePage';
+import MapPage from './pages/MapPage';
+import ContactPage from './pages/ContactPage';
 import InstallPWA from './components/InstallPWA';
 import { BottomNav } from './components/ui';
 import { BottomNavProvider } from './contexts/BottomNavContext';
@@ -141,12 +144,7 @@ function App() {
             path="/perfil"
             element={
               isAuthenticated ? (
-                <div className="flex items-center justify-center h-screen bg-gray-50">
-                  <div className="text-center">
-                    <h1 className="text-2xl font-bold text-loom mb-2">Perfil</h1>
-                    <p className="text-gray-600">Próximamente</p>
-                  </div>
-                </div>
+                <ProfilePage />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -156,12 +154,7 @@ function App() {
             path="/mapa"
             element={
               isAuthenticated ? (
-                <div className="flex items-center justify-center h-screen bg-gray-50">
-                  <div className="text-center">
-                    <h1 className="text-2xl font-bold text-loom mb-2">Mapa</h1>
-                    <p className="text-gray-600">Próximamente</p>
-                  </div>
-                </div>
+                <MapPage />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -171,12 +164,7 @@ function App() {
             path="/contacto"
             element={
               isAuthenticated ? (
-                <div className="flex items-center justify-center h-screen bg-gray-50">
-                  <div className="text-center">
-                    <h1 className="text-2xl font-bold text-loom mb-2">Contacto</h1>
-                    <p className="text-gray-600">Próximamente</p>
-                  </div>
-                </div>
+                <ContactPage />
               ) : (
                 <Navigate to="/login" replace />
               )

@@ -47,8 +47,6 @@ export function ProductsContainer() {
             <PageHeader 
                 title="Tienda" 
                 onBack={() => navigate('/home')}
-                transparent={true}
-                withPattern={true}
                 action={
                     <button
                         onClick={() => navigate('/ecom/cart')}

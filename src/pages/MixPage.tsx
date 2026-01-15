@@ -135,8 +135,6 @@ export default function MixPage() {
             <PageHeader 
                 title="Generar CALDO" 
                 onBack={() => navigate('/home')}
-                transparent={true}
-                withPattern={true}
             />
 
             {/* Main Content */}

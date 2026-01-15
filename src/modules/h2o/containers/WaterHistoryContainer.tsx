@@ -27,8 +27,6 @@ export function WaterHistoryContainer() {
             <PageHeader 
                 title={<>Historial H<sub className="text-sm">2</sub>O</>}
                 backTo="/home"
-                transparent={true}
-                withPattern={true}
             />
 
             <main className="flex-1 overflow-auto">
