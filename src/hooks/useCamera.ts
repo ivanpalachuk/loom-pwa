@@ -6,12 +6,15 @@ interface UseCameraReturn {
   isStreaming: boolean;
   error: string | null;
   capturedImage: string | null;
+  torchEnabled: boolean;
+  torchSupported: boolean;
   startCamera: () => Promise<void>;
   stopCamera: () => void;
   pauseCamera: () => void;
   resumeCamera: () => Promise<void>;
   capturePhoto: () => string | null;
   clearPhoto: () => void;
+  toggleTorch: () => Promise<void>;
 }
 
 export const useCamera = (): UseCameraReturn => {
@@ -22,6 +25,8 @@ export const useCamera = (): UseCameraReturn => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [torchEnabled, setTorchEnabled] = useState(false);
+  const [torchSupported, setTorchSupported] = useState(false);
 
   const startCamera = useCallback(async () => {
     try {
@@ -55,6 +60,13 @@ export const useCamera = (): UseCameraReturn => {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
         setIsStreaming(true);
+        
+        // Verificar si la linterna está soportada
+        const track = stream.getVideoTracks()[0];
+        if (track) {
+          const capabilities = track.getCapabilities?.() as MediaTrackCapabilities & { torch?: boolean };
+          setTorchSupported(!!capabilities?.torch);
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al acceder a la cámara';
@@ -141,17 +153,37 @@ export const useCamera = (): UseCameraReturn => {
     setCapturedImage(null);
   }, []);
 
+  const toggleTorch = useCallback(async () => {
+    if (!streamRef.current) return;
+    
+    const track = streamRef.current.getVideoTracks()[0];
+    if (!track) return;
+    
+    try {
+      const newTorchState = !torchEnabled;
+      await track.applyConstraints({
+        advanced: [{ torch: newTorchState } as MediaTrackConstraintSet]
+      });
+      setTorchEnabled(newTorchState);
+    } catch (err) {
+      console.error('Error al cambiar linterna:', err);
+    }
+  }, [torchEnabled]);
+
   return {
     videoRef,
     canvasRef,
     isStreaming,
     error,
     capturedImage,
+    torchEnabled,
+    torchSupported,
     startCamera,
     stopCamera,
     pauseCamera,
     resumeCamera,
     capturePhoto,
-    clearPhoto
+    clearPhoto,
+    toggleTorch
   };
 };

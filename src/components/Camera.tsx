@@ -14,10 +14,13 @@ export default function Camera({ onCapture, onClose, showStripGuide = false }: C
     isStreaming,
     error,
     capturedImage,
+    torchEnabled,
+    torchSupported,
     startCamera,
     pauseCamera,
     capturePhoto,
-    clearPhoto
+    clearPhoto,
+    toggleTorch
   } = useCamera();
 
   useEffect(() => {
@@ -106,123 +109,142 @@ export default function Camera({ onCapture, onClose, showStripGuide = false }: C
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-black/50 backdrop-blur flex-shrink-0">
+      {/* Video fullscreen como fondo */}
+      <div className="absolute inset-0">
+        {capturedImage ? (
+          <img
+            src={capturedImage}
+            alt="Captured"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="w-full h-full object-cover"
+          />
+        )}
+        <canvas ref={canvasRef} className="hidden" />
+      </div>
+
+      {/* Overlay de error */}
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center p-4 z-20">
+          <div className="bg-red-500/90 text-white p-4 rounded-2xl max-w-sm backdrop-blur">
+            <p className="font-semibold mb-2">Error</p>
+            <p className="text-sm">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Guía visual para tira reactiva */}
+      {showStripGuide && isStreaming && !capturedImage && (
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
+          {/* Área de la tira */}
+          <div className="relative flex flex-col items-center">
+            {/* Marco de la tira con sombra que oscurece el resto */}
+            <div 
+              className="relative border-2 border-white/90 rounded-xl bg-transparent"
+              style={{ 
+                width: '90px', 
+                height: '360px',
+                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)'
+              }}
+            >
+              {/* Indicadores de las 4 zonas de color */}
+              <div className="absolute inset-x-2 top-[5%] h-[14%] border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center">
+                <span className="text-[10px] text-white/70 font-medium">FCL</span>
+              </div>
+              <div className="absolute inset-x-2 top-[27%] h-[14%] border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center">
+                <span className="text-[10px] text-white/70 font-medium">ALK</span>
+              </div>
+              <div className="absolute inset-x-2 top-[49%] h-[14%] border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center">
+                <span className="text-[10px] text-white/70 font-medium">pH</span>
+              </div>
+              <div className="absolute inset-x-2 top-[71%] h-[14%] border-2 border-dashed border-white/50 rounded-lg flex items-center justify-center">
+                <span className="text-[10px] text-white/70 font-medium">TH</span>
+              </div>
+            </div>
+            
+            {/* Instrucciones */}
+            <div className="mt-6 text-center px-4">
+              <p className="text-white text-base font-semibold drop-shadow-lg">Centra la tira aquí</p>
+              <p className="text-white/80 text-sm mt-1 drop-shadow">Alinea los cuadrados de color</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Header flotante con glassmorphism */}
+      <div className="relative z-30 flex items-center justify-between px-4 py-3 bg-black/30 backdrop-blur-md">
         <button
           onClick={handleClose}
-          className="text-white p-2"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 text-white active:bg-black/60 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <h2 className="text-white font-semibold text-sm">Capturar Foto</h2>
-        <div className="w-6"></div>
-      </div>
-
-      {/* Camera View or Preview */}
-      <div className="flex-1 relative flex items-center justify-center bg-black overflow-hidden min-h-0">
-        {error && (
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="bg-red-500/90 text-white p-4 rounded-lg max-w-sm">
-              <p className="font-semibold mb-2">Error</p>
-              <p className="text-sm">{error}</p>
-            </div>
-          </div>
-        )}
-
-        {capturedImage ? (
-          <img
-            src={capturedImage}
-            alt="Captured"
-            className="max-w-full max-h-full object-contain"
-          />
+        
+        <h2 className="text-white font-semibold text-sm drop-shadow">
+          {showStripGuide ? 'Escanear Tira' : 'Capturar Foto'}
+        </h2>
+        
+        {/* Botón de linterna */}
+        {torchSupported && !capturedImage ? (
+          <button
+            onClick={toggleTorch}
+            className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${
+              torchEnabled 
+                ? 'bg-yellow-400 text-black' 
+                : 'bg-black/40 text-white active:bg-black/60'
+            }`}
+          >
+            <svg className="w-5 h-5" fill={torchEnabled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </button>
         ) : (
-          <>
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="max-w-full max-h-full object-contain"
-            />
-            
-            {/* Guía visual para tira reactiva */}
-            {showStripGuide && isStreaming && (
-              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                {/* Overlay oscuro con recorte para la tira */}
-                <div className="absolute inset-0 bg-black/50" />
-                
-                {/* Área de la tira (recortada) */}
-                <div className="relative z-10 flex flex-col items-center">
-                  {/* Marco de la tira */}
-                  <div 
-                    className="relative border-2 border-white rounded-lg bg-transparent"
-                    style={{ 
-                      width: '80px', 
-                      height: '280px',
-                      boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)'
-                    }}
-                  >
-                    {/* Indicadores de las 4 zonas de color */}
-                    <div className="absolute inset-x-2 top-[10%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
-                      <span className="text-[8px] text-white/80">FCL</span>
-                    </div>
-                    <div className="absolute inset-x-2 top-[30%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
-                      <span className="text-[8px] text-white/80">ALK</span>
-                    </div>
-                    <div className="absolute inset-x-2 top-[50%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
-                      <span className="text-[8px] text-white/80">pH</span>
-                    </div>
-                    <div className="absolute inset-x-2 top-[70%] h-[15%] border border-dashed border-white/60 rounded flex items-center justify-center">
-                      <span className="text-[8px] text-white/80">TH</span>
-                    </div>
-                  </div>
-                  
-                  {/* Instrucciones */}
-                  <div className="mt-4 text-center">
-                    <p className="text-white text-sm font-medium">Centra la tira aquí</p>
-                    <p className="text-white/70 text-xs mt-1">Alinea los cuadrados de color</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
+          <div className="w-10"></div>
         )}
-
-        <canvas ref={canvasRef} className="hidden" />
       </div>
 
-      {/* Controls - Siempre visible */}
-      <div className="p-6 bg-black flex-shrink-0" style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}>
+      {/* Spacer flexible */}
+      <div className="flex-1" />
+
+      {/* Controls flotantes abajo */}
+      <div 
+        className="relative z-30 p-6 bg-gradient-to-t from-black/70 via-black/40 to-transparent"
+        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}
+      >
         {capturedImage ? (
-          <div className="flex gap-3 justify-center">
+          <div className="flex gap-4 justify-center">
             <button
               onClick={handleRetake}
-              className="px-6 py-3 bg-gray-600 text-white rounded-full font-medium hover:bg-gray-700 transition-colors"
+              className="px-8 py-3.5 bg-white/20 backdrop-blur text-white rounded-full font-semibold active:bg-white/30 transition-colors border border-white/30"
             >
               Reintentar
             </button>
             <button
               onClick={handleConfirm}
-              className="px-6 py-3 bg-loom text-white rounded-full font-medium hover:bg-loom-70 transition-colors"
+              className="px-8 py-3.5 bg-loom text-white rounded-full font-semibold active:bg-loom-dark transition-colors shadow-lg"
             >
               Usar Foto
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-3 items-center">
+          <div className="flex flex-col gap-4 items-center">
+            {/* Botón de captura grande y moderno */}
             <button
               onClick={handleCapture}
               disabled={!isStreaming}
-              className="w-20 h-20 bg-white rounded-full shadow-2xl active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed relative"
-              style={{
-                background: 'white',
-                border: '5px solid white',
-                boxShadow: '0 0 0 4px rgba(0, 78, 168, 0.3), 0 20px 50px rgba(0, 0, 0, 0.5)'
-              }}
+              className="w-20 h-20 rounded-full disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-transform"
             >
-              <div className="absolute inset-2 bg-loom rounded-full"></div>
+              <div className="w-full h-full rounded-full border-4 border-white p-1">
+                <div className="w-full h-full rounded-full bg-white" />
+              </div>
               <span className="sr-only">Capturar foto</span>
             </button>
 
@@ -230,7 +252,7 @@ export default function Camera({ onCapture, onClose, showStripGuide = false }: C
             {error && (
               <button
                 onClick={handleSimulateCapture}
-                className="px-6 py-3 bg-purple-600 text-white rounded-full font-medium hover:bg-purple-700 transition-colors shadow-lg"
+                className="px-6 py-3 bg-purple-600/80 backdrop-blur text-white rounded-full font-medium active:bg-purple-700 transition-colors"
               >
                 🎭 Simular Captura
               </button>

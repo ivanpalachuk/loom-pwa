@@ -29,34 +29,40 @@ export interface ExtractedColor {
  * 2. Alk (Alcalinidad) - segundo cuadrado
  * 3. pH - tercer cuadrado
  * 4. TH (Dureza Total) - cuadrado inferior
+ * 
+ * IMPORTANTE: Estas zonas deben coincidir con la guía visual de Camera.tsx
+ * La guía ocupa el centro de la pantalla con:
+ * - Ancho: ~90px centrado (aprox 12% del ancho en móvil)
+ * - Alto: ~360px centrado (aprox 50% del alto)
+ * - Zonas a 5%, 27%, 49%, 71% desde arriba del marco
  */
 export const INSTATEST_ZONES: ColorZone[] = [
   {
-    x: 30, // Centrado horizontalmente
-    y: 10, // Cuadrado superior - FCL
-    width: 40,
-    height: 18,
+    x: 44, // Centro horizontal de la imagen
+    y: 28, // FCL - primer cuadrado (5% del marco que empieza ~25%)
+    width: 12,
+    height: 7,
     parameter: 'fcl',
   },
   {
-    x: 30,
-    y: 30, // Segundo cuadrado - Alkalinity
-    width: 40,
-    height: 18,
+    x: 44,
+    y: 38, // Alkalinity - segundo cuadrado (27% del marco)
+    width: 12,
+    height: 7,
     parameter: 'alkalinity',
   },
   {
-    x: 30,
-    y: 50, // Tercer cuadrado - pH
-    width: 40,
-    height: 18,
+    x: 44,
+    y: 48, // pH - tercer cuadrado (49% del marco)
+    width: 12,
+    height: 7,
     parameter: 'ph',
   },
   {
-    x: 30,
-    y: 70, // Cuadrado inferior - Hardness (TH)
-    width: 40,
-    height: 18,
+    x: 44,
+    y: 58, // Hardness - cuarto cuadrado (71% del marco)
+    width: 12,
+    height: 7,
     parameter: 'hardness',
   },
 ];

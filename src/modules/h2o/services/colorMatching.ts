@@ -19,63 +19,63 @@ export interface ParameterMatch {
 
 /**
  * Referencias de colores FCL (Cloro Libre) - InstaTest
- * Extraídas de imágenes reales de tiras
+ * De blanco/crema (sin cloro) a amarillo (con cloro)
  */
 export const FCL_COLOR_REFERENCES: ColorReference[] = [
-  { value: 0, color: '#b1aa96' },     // Sin uso / Sin cloro
-  { value: 0.5, color: '#bbb59e' },   // Cloro bajo
-  { value: 1.0, color: '#b9b39f' },   // Cloro bajo-medio
-  { value: 1.5, color: '#b7b5a4' },   // Cloro medio
-  { value: 2.0, color: '#b4b1a2' },   // Cloro medio-alto
-  { value: 3.0, color: '#adaea1' },   // Cloro alto
-  { value: 5.0, color: '#a5a89c' },   // Cloro muy alto
-  { value: 10.0, color: '#9da097' },  // Cloro extremo
+  { value: 0, color: '#f0ece0' },     // Blanco crema - sin cloro (imagen 1-3)
+  { value: 0.5, color: '#f2edc8' },   // Crema claro
+  { value: 1.0, color: '#e8e0a0' },   // Amarillo muy pálido
+  { value: 1.5, color: '#e0d480' },   // Amarillo pálido
+  { value: 2.0, color: '#d8c860' },   // Amarillo claro
+  { value: 3.0, color: '#d0c040' },   // Amarillo (imagen 4)
+  { value: 5.0, color: '#c8b830' },   // Amarillo intenso
+  { value: 10.0, color: '#c0b020' },  // Amarillo oscuro
 ];
 
 /**
  * Referencias de colores para pH - InstaTest
- * Extraídas de imágenes reales de tiras
+ * De rosa/fucsia (ácido ~6.8) a naranja (alcalino ~8.0)
  */
 export const PH_COLOR_REFERENCES: ColorReference[] = [
-  { value: 6.2, color: '#888b80' },   // pH bajo (ácido) - sin uso
-  { value: 6.5, color: '#919488' },   // pH bajo-medio
-  { value: 6.8, color: '#9b998b' },   // pH medio-bajo
-  { value: 7.0, color: '#97978c' },   // pH neutro bajo
-  { value: 7.2, color: '#95948e' },   // pH neutro
-  { value: 7.4, color: '#989790' },   // pH neutro alto
-  { value: 7.6, color: '#9c9a8e' },   // pH medio-alto
-  { value: 7.8, color: '#9e9c8f' },   // pH alto
-  { value: 8.0, color: '#a09b8f' },   // pH alto (alcalino)
-  { value: 8.4, color: '#a5a092' },   // pH muy alto
+  { value: 6.2, color: '#e04878' },   // Fucsia muy intenso
+  { value: 6.5, color: '#e05880' },   // Fucsia intenso
+  { value: 6.8, color: '#e86888' },   // Rosa fucsia (imágenes 1-3)
+  { value: 7.0, color: '#e87888' },   // Rosa medio
+  { value: 7.2, color: '#e88880' },   // Rosa claro
+  { value: 7.4, color: '#e89878' },   // Rosa salmón
+  { value: 7.6, color: '#e8a070' },   // Salmón naranja
+  { value: 7.8, color: '#e8a060' },   // Naranja claro
+  { value: 8.0, color: '#e89850' },   // Naranja (imagen 4)
+  { value: 8.4, color: '#e09040' },   // Naranja intenso
 ];
 
 /**
  * Referencias de colores para Alkalinity (KH) - InstaTest
- * Extraídas de imágenes reales de tiras
+ * De azul celeste claro (baja) a amarillo/verde (alta)
  */
 export const ALKALINITY_COLOR_REFERENCES: ColorReference[] = [
-  { value: 0, color: '#a39682' },     // Sin alcalinidad
-  { value: 40, color: '#a99b89' },    // Alcalinidad baja
-  { value: 80, color: '#af9d8c' },    // Alcalinidad baja-media
-  { value: 120, color: '#ae9c91' },   // Alcalinidad media
-  { value: 180, color: '#b19f92' },   // Alcalinidad media-alta
-  { value: 240, color: '#b3a294' },   // Alcalinidad alta
-  { value: 360, color: '#b8a698' },   // Alcalinidad muy alta
+  { value: 0, color: '#90d0f0' },     // Azul celeste muy claro
+  { value: 40, color: '#70c0e8' },    // Azul celeste claro (imagen 1)
+  { value: 80, color: '#50b0e0' },    // Azul celeste (imagen 2-3)
+  { value: 120, color: '#40a0d0' },   // Azul celeste medio
+  { value: 180, color: '#c0c870' },   // Verde amarillento
+  { value: 240, color: '#d0d060' },   // Amarillo verdoso (imagen 4)
+  { value: 360, color: '#d8d850' },   // Amarillo
 ];
 
 /**
  * Referencias de colores para Hardness / Total Hardness (TH) - InstaTest
- * Extraídas de imágenes reales de tiras
+ * De azul celeste (blanda) a verde turquesa (dura)
  */
 export const HARDNESS_COLOR_REFERENCES: ColorReference[] = [
-  { value: 0, color: '#868077' },     // Sin dureza
-  { value: 25, color: '#8b8579' },    // Dureza muy baja
-  { value: 50, color: '#9c9382' },    // Dureza baja
-  { value: 120, color: '#97907f' },   // Dureza baja-media
-  { value: 180, color: '#999386' },   // Dureza media
-  { value: 250, color: '#928c80' },   // Dureza media-alta
-  { value: 425, color: '#948d7f' },   // Dureza alta
-  { value: 1000, color: '#908a7c' },  // Dureza muy alta
+  { value: 0, color: '#70b8e0' },     // Azul celeste claro (imagen 1)
+  { value: 25, color: '#60b0d8' },    // Azul celeste
+  { value: 50, color: '#50a8d0' },    // Azul celeste medio (imagen 2)
+  { value: 120, color: '#5090c0' },   // Azul medio
+  { value: 180, color: '#5080b8' },   // Azul púrpura (imagen 3)
+  { value: 250, color: '#60a8a8' },   // Azul verdoso
+  { value: 425, color: '#70c0b0' },   // Turquesa (imagen 4)
+  { value: 1000, color: '#80d0c0' },  // Verde turquesa
 ];
 
 /**
