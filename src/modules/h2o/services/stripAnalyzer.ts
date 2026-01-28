@@ -2,7 +2,8 @@
  * Servicio principal para analizar tiras reactivas desde fotos
  */
 
-import { extractStripColors, type ColorZone } from './colorExtraction';
+import { extractStripColors, type ColorZone, imageToCanvas, extractColorsFromCanvas, INSTATEST_ZONES } from './colorExtraction';
+import { calculateDynamicZones } from './stripDetection';
 import { matchColor, type ParameterMatch } from './colorMatching';
 import type { WaterQualityData } from '../types';
 
@@ -16,23 +17,44 @@ export interface StripAnalysisResult {
 /**
  * Analiza una foto de tira reactiva y devuelve los parámetros del agua
  */
+/**
+ * Analiza una foto de tira reactiva y devuelve los parámetros del agua
+ */
 export async function analyzeStripPhoto(
   imageData: string,
   customZones?: ColorZone[]
 ): Promise<StripAnalysisResult> {
   try {
-    // 1. Extraer colores de las zonas de la tira
-    const extractedColors = await extractStripColors(imageData, customZones);
+    // 0. Preparar canvas
+    const canvas = await imageToCanvas(imageData);
+
+    // 1. Determinar zonas (Dinámicas > Custom > Default)
+    let zones = customZones;
     
-    // 2. Comparar cada color con las referencias
+    if (!zones) {
+      // Intentar detectar automáticamente
+      const dynamicZones = calculateDynamicZones(canvas);
+      if (dynamicZones) {
+        console.log('Using dynamically detected zones based on strip position');
+        zones = dynamicZones;
+      } else {
+        console.log('Dynamic detection failed, falling back to static zones');
+        zones = INSTATEST_ZONES;
+      }
+    }
+
+    // 2. Extraer colores usando el canvas ya creado
+    const extractedColors = extractColorsFromCanvas(canvas, zones);
+    
+    // 3. Comparar cada color con las referencias
     const matches: ParameterMatch[] = extractedColors.map(extracted => {
       return matchColor(extracted.parameter, extracted.rgb, extracted.hex);
     });
     
-    // 3. Construir los datos de calidad del agua
+    // 4. Construir los datos de calidad del agua
     const waterQuality = buildWaterQualityData(matches);
     
-    // 4. Calcular confianza promedio
+    // 5. Calcular confianza promedio
     const averageConfidence = matches.reduce((sum, m) => sum + m.confidence, 0) / matches.length;
     
     return {

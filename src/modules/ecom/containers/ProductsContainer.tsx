@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../../components/ui';
 import { ProductGrid } from '../components';
-import type { Product, ProductFilters } from '../types';
+import type { Product, ProductFilters, ProductPresentation } from '../types';
 import { getProducts, addToCart, getCartItemCount } from '../services';
 
 export function ProductsContainer() {
@@ -36,7 +36,8 @@ export function ProductsContainer() {
         navigate(`/ecom/product/${product.id}`);
     };
 
-    const handleAddToCart = (product: Product, quantity: number) => {
+    const handleAddToCart = (product: Product, quantity: number, _presentation?: ProductPresentation) => {
+        // TODO: Implementar lógica de presentaciones en el carrito
         addToCart(product, quantity);
         setCartCount(getCartItemCount());
     };

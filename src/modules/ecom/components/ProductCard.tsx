@@ -1,22 +1,26 @@
 import { useState } from 'react';
-import type { Product } from '../types';
+import type { Product, ProductPresentation } from '../types';
 
 interface ProductCardProps {
     product: Product;
     onClick: (product: Product) => void;
-    onAddToCart: (product: Product, quantity: number) => void;
+    onAddToCart: (product: Product, quantity: number, presentation?: ProductPresentation) => void;
 }
 
 export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps) {
     const [quantity, setQuantity] = useState(1);
     const [isAdding, setIsAdding] = useState(false);
+    const [selectedPresentation, setSelectedPresentation] = useState<ProductPresentation | undefined>(
+        product.presentations?.[0]
+    );
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation(); // Evitar que se dispare el onClick del card
         setIsAdding(true);
         
         try {
-            onAddToCart(product, quantity);
+            onAddToCart(product, quantity, selectedPresentation);
             setQuantity(1); // Reset cantidad
             
             // Feedback visual
@@ -29,13 +33,29 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
 
     const handleQuantityChange = (e: React.MouseEvent, delta: number) => {
         e.stopPropagation();
+        const currentStock = selectedPresentation?.stock || product.stock;
         const newQuantity = quantity + delta;
-        if (newQuantity >= 1 && newQuantity <= product.stock) {
+        if (newQuantity >= 1 && newQuantity <= currentStock) {
             setQuantity(newQuantity);
         }
     };
 
+    const handlePresentationChange = (presentation: ProductPresentation) => {
+        setSelectedPresentation(presentation);
+        setQuantity(1); // Reset cantidad cuando cambia presentación
+        setIsDropdownOpen(false);
+    };
+
+    const toggleDropdown = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
     const formatPrice = (price: number) => {
+        // Si el precio es menor a 1000, es USD (H2oControl), sino es ARS (Loom)
+        if (price < 1000) {
+            return `USD ${price.toFixed(2)} / Litro`;
+        }
         return new Intl.NumberFormat('es-AR', {
             style: 'currency',
             currency: 'ARS',
@@ -43,8 +63,10 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
         }).format(price);
     };
 
-    const isOutOfStock = product.stock === 0;
-    const isLowStock = product.stock > 0 && product.stock <= 10;
+    const currentPrice = selectedPresentation?.pricePerLiter || product.price;
+    const currentStock = selectedPresentation?.stock || product.stock;
+    const isOutOfStock = currentStock === 0;
+    const isLowStock = currentStock > 0 && currentStock <= 10;
 
     return (
         <div
@@ -52,6 +74,7 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
             className={`bg-white rounded-2xl shadow-md border-2 border-gray-100 overflow-hidden transition-all duration-300 ${
                 isOutOfStock ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-xl hover:border-loom/30 cursor-pointer transform hover:scale-105'
             }`}
+            style={product.color ? { borderLeftWidth: '6px', borderLeftColor: product.color } : {}}
         >
             {/* Imagen */}
             <div className="relative h-48 bg-gray-100 overflow-hidden">
@@ -81,6 +104,13 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
                 <div className="absolute bottom-2 left-2 bg-loom/90 text-white px-3 py-1 rounded-full text-xs font-semibold capitalize">
                     {product.category}
                 </div>
+
+                {/* Badge de marca */}
+                {product.brand && (
+                    <div className="absolute top-2 left-2 bg-white/90 text-gray-800 px-3 py-1 rounded-full text-xs font-bold">
+                        {product.brand}
+                    </div>
+                )}
             </div>
 
             {/* Contenido */}
@@ -95,13 +125,84 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
                     {product.shortDescription || product.description}
                 </p>
 
+                {/* Selector de presentación personalizado (si hay múltiples) */}
+                {product.presentations && product.presentations.length > 1 && (
+                    <div className="mb-3 relative" onClick={(e) => e.stopPropagation()}>
+                        <label className="text-xs text-gray-600 mb-1 block font-medium">Presentación:</label>
+                        
+                        {/* Botón selector */}
+                        <button
+                            type="button"
+                            onClick={toggleDropdown}
+                            className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm font-semibold bg-white hover:border-loom/50 focus:border-loom focus:outline-none transition-colors flex items-center justify-between group"
+                        >
+                            <span className="flex items-center gap-2">
+                                <svg className="w-4 h-4 text-loom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                                <span className="text-gray-800">
+                                    {selectedPresentation?.size || product.presentations[0].size}
+                                </span>
+                                <span className="text-loom font-bold">
+                                    USD {(selectedPresentation?.pricePerLiter || product.presentations[0].pricePerLiter).toFixed(2)}/L
+                                </span>
+                            </span>
+                            <svg
+                                className={`w-5 h-5 text-gray-500 group-hover:text-loom transition-all duration-200 ${
+                                    isDropdownOpen ? 'rotate-180' : ''
+                                }`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        {/* Dropdown menu */}
+                        {isDropdownOpen && (
+                            <div className="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                                {product.presentations.map((pres) => (
+                                    <button
+                                        key={pres.size}
+                                        type="button"
+                                        onClick={() => handlePresentationChange(pres)}
+                                        className={`w-full px-4 py-3 text-left hover:bg-loom/5 transition-colors border-b border-gray-100 last:border-b-0 ${
+                                            selectedPresentation?.size === pres.size ? 'bg-loom/10' : ''
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                {selectedPresentation?.size === pres.size && (
+                                                    <svg className="w-4 h-4 text-loom" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                    </svg>
+                                                )}
+                                                <span className="text-sm font-semibold text-gray-800">{pres.size}</span>
+                                            </div>
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-sm font-bold text-loom">
+                                                    USD {pres.pricePerLiter.toFixed(2)}/L
+                                                </span>
+                                                <span className="text-xs text-gray-500">
+                                                    Stock: {pres.stock}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Precio */}
                 <div className="flex items-baseline gap-2 mb-4">
                     <span className="text-2xl font-bold text-loom">
-                        {formatPrice(product.price)}
+                        {formatPrice(currentPrice)}
                     </span>
                     <span className="text-xs text-gray-500">
-                        Stock: {product.stock}
+                        Stock: {currentStock}
                     </span>
                 </div>
 
@@ -124,7 +225,7 @@ export function ProductCard({ product, onClick, onAddToCart }: ProductCardProps)
                             </span>
                             <button
                                 onClick={(e) => handleQuantityChange(e, 1)}
-                                disabled={quantity >= product.stock}
+                                disabled={quantity >= currentStock}
                                 className="px-3 py-2 bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

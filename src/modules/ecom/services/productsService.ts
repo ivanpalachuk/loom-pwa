@@ -1,7 +1,204 @@
 import type { Product, ProductFilters } from '../types';
 
-// Mock de productos
-const MOCK_PRODUCTS: Product[] = [
+// Productos H2oControl Agro 2026 - Precios con 50% de incremento + IVA
+const H2O_CONTROL_PRODUCTS: Product[] = [
+    {
+        id: 'h2o-001',
+        name: 'XTM',
+        description: 'Coadyuvante compatibilizante con tecnología de nano-emulsión. Mejora la mezcla y compatibilidad de productos fitosanitarios.',
+        shortDescription: 'Coadyuvante Compatibilizante Tecnología de nano-emulsión',
+        imageUrl: '/h2o_xtm.png',
+        price: 22.5, // 15.00 * 1.5
+        presentations: [
+            { size: '10 Lts', pricePerLiter: 22.5, stock: 50 }
+        ],
+        category: 'coadyuvantes',
+        stock: 50,
+        sku: 'H2O-XTM-001',
+        brand: 'H2oControl',
+        color: '#D32F2F', // rojo
+        waterCorrection: {
+            parameter: 'all',
+            action: 'balance'
+        }
+    },
+    {
+        id: 'h2o-002',
+        name: 'ACTION',
+        description: 'Aceite multixito coadyuvante emulsionante. Excelente adhesividad y adherencia. Mejora la penetración de productos.',
+        shortDescription: 'Aceite multixito Coadyuvante Emulsionante Adherente Antievaporante',
+        imageUrl: '/h2o_action.png',
+        price: 15.0, // 10.00 * 1.5
+        presentations: [
+            { size: '20 Lts', pricePerLiter: 15.0, stock: 100 },
+            { size: '5 Lts', pricePerLiter: 16.5, stock: 80 } // 11.00 * 1.5
+        ],
+        category: 'coadyuvantes',
+        stock: 180,
+        sku: 'H2O-ACTION-002',
+        brand: 'H2oControl',
+        color: '#FF6F00', // naranja
+        waterCorrection: {
+            parameter: 'all',
+            action: 'balance'
+        }
+    },
+    {
+        id: 'h2o-003',
+        name: 'DROP',
+        description: 'Fitosanulante coadyuvante y corrector de aguas. Acidificante de agua de pulverización. Mejora la efectividad de agroquímicos.',
+        shortDescription: 'Fitosanulante Coadyuvante Corrector de aguas Adherente',
+        imageUrl: '/h2o_drop.png',
+        price: 18.0, // 12.00 * 1.5
+        presentations: [
+            { size: '5 Lts', pricePerLiter: 18.0, stock: 60 },
+            { size: '1 Lt', pricePerLiter: 19.5, stock: 120 } // 13.00 * 1.5
+        ],
+        category: 'correctores',
+        stock: 180,
+        sku: 'H2O-DROP-003',
+        brand: 'H2oControl',
+        color: '#1976D2', // azul
+        waterCorrection: {
+            parameter: 'ph',
+            action: 'decrease'
+        }
+    },
+    {
+        id: 'h2o-004',
+        name: 'MIX',
+        description: 'Compatibilizador universal de productos fitosanitarios. Facilita la mezcla de productos incompatibles. Evita floculación y precipitaciones.',
+        shortDescription: 'Compatibilizador',
+        imageUrl: '/h2o_mix.png',
+        price: 15.0, // 10.00 * 1.5
+        presentations: [
+            { size: '5 Lts', pricePerLiter: 15.0, stock: 70 }
+        ],
+        category: 'coadyuvantes',
+        stock: 70,
+        sku: 'H2O-MIX-004',
+        brand: 'H2oControl',
+        color: '#757575', // gris
+        waterCorrection: {
+            parameter: 'all',
+            action: 'balance'
+        }
+    },
+    {
+        id: 'h2o-005',
+        name: 'SYNERGYCIDE',
+        description: 'Coadyuvante humectante y antievaporante. Reduce la evaporación del caldo. Mejora cobertura y penetración foliar.',
+        shortDescription: 'Coadyuvante Humectante Antievaporante Adherente',
+        imageUrl: '/h2o_synergycide.png',
+        price: 15.0, // 10.00 * 1.5
+        presentations: [
+            { size: '5 Lts', pricePerLiter: 15.0, stock: 90 },
+            { size: '1 Lt', pricePerLiter: 16.5, stock: 150 } // 11.00 * 1.5
+        ],
+        category: 'coadyuvantes',
+        stock: 240,
+        sku: 'H2O-SYNC-005',
+        brand: 'H2oControl',
+        color: '#0288D1', // celeste
+        waterCorrection: {
+            parameter: 'all',
+            action: 'balance'
+        }
+    },
+    {
+        id: 'h2o-006',
+        name: 'COMBATE',
+        description: 'Sulfato de amonio Premium. Corrector de pH y fuente de nitrógeno. Potencia la acción de herbicidas. Reduce dureza del agua.',
+        shortDescription: 'Sulfato de amonio Premium Corrector de aguas',
+        imageUrl: '/h2o_combate.png',
+        price: 4.2, // 2.80 * 1.5
+        presentations: [
+            { size: '20 Lts', pricePerLiter: 4.2, stock: 200 },
+            { size: '5 Lts', pricePerLiter: 4.5, stock: 150 } // 3.00 * 1.5
+        ],
+        category: 'correctores',
+        stock: 350,
+        sku: 'H2O-COMBATE-006',
+        brand: 'H2oControl',
+        color: '#388E3C', // verde
+        waterCorrection: {
+            parameter: 'ph',
+            action: 'decrease'
+        }
+    },
+    {
+        id: 'h2o-007',
+        name: 'AGROTURBO',
+        description: 'Corrector de pH y secuestrante de cationes. Elimina sales que interfieren con agroquímicos. Optimiza dureza del agua.',
+        shortDescription: 'Corrector de pH Secuestrante de Cationes',
+        imageUrl: '/h2o_agroturbo.png',
+        price: 15.0, // 10.00 * 1.5
+        presentations: [
+            { size: '5 Lts', pricePerLiter: 15.0, stock: 60 },
+            { size: '1 Lt', pricePerLiter: 16.5, stock: 100 } // 11.00 * 1.5
+        ],
+        category: 'correctores',
+        stock: 160,
+        sku: 'H2O-AGRO-007',
+        brand: 'H2oControl',
+        color: '#D32F2F', // rojo
+        waterCorrection: {
+            parameter: 'ph',
+            action: 'decrease'
+        }
+    },
+    {
+        id: 'h2o-008',
+        name: 'OXOCAT',
+        description: 'Bactericida y fungicida de amplio espectro. A base de peróxido de hidrógeno estabilizado. Limpieza de sistemas de riego.',
+        shortDescription: 'Bactericida Fungicida',
+        imageUrl: '/h2o_oxocat.png',
+        price: 19.5, // 13.0 * 1.5
+        presentations: [
+            { size: '5 Lts', pricePerLiter: 19.5, stock: 40 }
+        ],
+        category: 'bactericidas',
+        stock: 40,
+        sku: 'H2O-OXOCAT-008',
+        brand: 'H2oControl',
+        color: '#1565C0', // azul oscuro
+    },
+    {
+        id: 'h2o-009',
+        name: 'PERCYDE',
+        description: 'Bioactiv proteoproteína para tratamiento de sistemas de riego. Elimina biofilm y obstrucciones. Previene taponamientos de goteros.',
+        shortDescription: 'Bioactiv proteoproteína Tratamiento de sistemas de riego',
+        imageUrl: '/h2o_percyde.png',
+        price: 7.5, // 5.00 * 1.5
+        presentations: [
+            { size: '20 Lts', pricePerLiter: 7.5, stock: 80 }
+        ],
+        category: 'bactericidas',
+        stock: 80,
+        sku: 'H2O-PERCYDE-009',
+        brand: 'H2oControl',
+        color: '#2E7D32', // verde oscuro
+    },
+    {
+        id: 'h2o-010',
+        name: 'CLEAN',
+        description: 'Limpiador o moldeador de fitosanitarios. Limpieza de equipos de aplicación. Elimina residuos de herbicidas, insecticidas y fungicidas.',
+        shortDescription: 'Limpiador o moldeador de Fitosanitarios',
+        imageUrl: '/h2o_clean.png',
+        price: 10.5, // 7.00 * 1.5
+        presentations: [
+            { size: '1 Lt', pricePerLiter: 10.5, stock: 100 }
+        ],
+        category: 'limpiadores',
+        stock: 100,
+        sku: 'H2O-CLEAN-010',
+        brand: 'H2oControl',
+        color: '#00ACC1', // cyan
+    },
+];
+
+// Mock de productos Loom originales
+const LOOM_PRODUCTS: Product[] = [
     {
         id: '1',
         name: 'Loom Glif 48',
@@ -11,7 +208,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 45000,
         category: 'antigranizo',
         stock: 15,
-        sku: 'LOOM-GLIF-001'
+        sku: 'LOOM-GLIF-001',
+        brand: 'Loom'
     },
     {
         id: '2',
@@ -55,7 +253,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 25000,
         category: 'cortaviento',
         stock: 18,
-        sku: 'LOOM-LAM-005'
+        sku: 'LOOM-LAM-005',
+        brand: 'Loom'
     },
     {
         id: '6',
@@ -66,7 +265,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 25000,
         category: 'fertilizantes',
         stock: 120,
-        sku: 'LOOM-FERT-006'
+        sku: 'LOOM-FERT-006',
+        brand: 'Loom'
     },
     {
         id: '7',
@@ -77,7 +277,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 28500,
         category: 'fertilizantes',
         stock: 95,
-        sku: 'LOOM-FERTP-007'
+        sku: 'LOOM-FERTP-007',
+        brand: 'Loom'
     },
     {
         id: '8',
@@ -88,7 +289,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 45000,
         category: 'equipos',
         stock: 15,
-        sku: 'LOOM-PULV-008'
+        sku: 'LOOM-PULV-008',
+        brand: 'Loom'
     },
     {
         id: '9',
@@ -99,7 +301,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 8500,
         category: 'equipos',
         stock: 67,
-        sku: 'LOOM-BOQ-009'
+        sku: 'LOOM-BOQ-009',
+        brand: 'Loom'
     },
     {
         id: '10',
@@ -110,7 +313,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 72000,
         category: 'antigranizo',
         stock: 6,
-        sku: 'LOOM-MET-010'
+        sku: 'LOOM-MET-010',
+        brand: 'Loom'
     },
     {
         id: '11',
@@ -121,7 +325,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 20000,
         category: 'cortaviento',
         stock: 30,
-        sku: 'LOOM-AZO-011'
+        sku: 'LOOM-AZO-011',
+        brand: 'Loom'
     },
     {
         id: '12',
@@ -132,7 +337,8 @@ const MOCK_PRODUCTS: Product[] = [
         price: 42000,
         category: 'proteccion',
         stock: 16,
-        sku: 'LOOM-IMI-012'
+        sku: 'LOOM-IMI-012',
+        brand: 'Loom'
     },
     // Productos para corrección de agua
     {
@@ -145,6 +351,7 @@ const MOCK_PRODUCTS: Product[] = [
         category: 'agua',
         stock: 45,
         sku: 'LOOM-PHD-013',
+        brand: 'Loom',
         waterCorrection: { parameter: 'ph', action: 'decrease' }
     },
     {
@@ -157,6 +364,7 @@ const MOCK_PRODUCTS: Product[] = [
         category: 'agua',
         stock: 38,
         sku: 'LOOM-PHU-014',
+        brand: 'Loom',
         waterCorrection: { parameter: 'ph', action: 'increase' }
     },
     {
@@ -169,6 +377,7 @@ const MOCK_PRODUCTS: Product[] = [
         category: 'agua',
         stock: 28,
         sku: 'LOOM-ALD-015',
+        brand: 'Loom',
         waterCorrection: { parameter: 'alkalinity', action: 'decrease' }
     },
     {
@@ -181,6 +390,7 @@ const MOCK_PRODUCTS: Product[] = [
         category: 'agua',
         stock: 20,
         sku: 'LOOM-SFT-016',
+        brand: 'Loom',
         waterCorrection: { parameter: 'hardness', action: 'decrease' }
     },
     {
@@ -193,9 +403,13 @@ const MOCK_PRODUCTS: Product[] = [
         category: 'agua',
         stock: 15,
         sku: 'LOOM-WBL-017',
+        brand: 'Loom',
         waterCorrection: { parameter: 'all', action: 'balance' }
     }
 ];
+
+// Combinar todos los productos
+const MOCK_PRODUCTS: Product[] = [...H2O_CONTROL_PRODUCTS, ...LOOM_PRODUCTS];
 
 /**
  * Simula obtención de productos desde API
@@ -228,7 +442,8 @@ export const getProducts = async (filters?: ProductFilters): Promise<Product[]> 
             filtered = filtered.filter(p =>
                 p.name.toLowerCase().includes(query) ||
                 p.description.toLowerCase().includes(query) ||
-                p.shortDescription?.toLowerCase().includes(query)
+                p.shortDescription?.toLowerCase().includes(query) ||
+                p.brand?.toLowerCase().includes(query)
             );
         }
     }
@@ -249,4 +464,20 @@ export const getProductById = async (id: string): Promise<Product | null> => {
  */
 export const getCategories = (): string[] => {
     return [...new Set(MOCK_PRODUCTS.map(p => p.category))];
+};
+
+/**
+ * Obtiene productos de H2oControl Agro
+ */
+export const getH2oControlProducts = async (): Promise<Product[]> => {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    return H2O_CONTROL_PRODUCTS;
+};
+
+/**
+ * Obtiene productos por marca
+ */
+export const getProductsByBrand = async (brand: string): Promise<Product[]> => {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    return MOCK_PRODUCTS.filter(p => p.brand === brand);
 };

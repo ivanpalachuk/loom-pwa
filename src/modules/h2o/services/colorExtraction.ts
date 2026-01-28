@@ -149,14 +149,12 @@ export function rgbToHex(rgb: RGBColor): string {
 }
 
 /**
- * Extrae los colores de todas las zonas de la tira
+ * Extrae los colores de todas las zonas de la tira (usando canvas existente)
  */
-export async function extractStripColors(
-  imageData: string,
-  zones: ColorZone[] = INSTATEST_ZONES
-): Promise<ExtractedColor[]> {
-  const canvas = await imageToCanvas(imageData);
-  
+export function extractColorsFromCanvas(
+  canvas: HTMLCanvasElement,
+  zones: ColorZone[]
+): ExtractedColor[] {
   // Debug: log canvas size and zone positions
   console.log('Canvas size:', canvas.width, 'x', canvas.height);
   zones.forEach(zone => {
@@ -175,6 +173,17 @@ export async function extractStripColors(
       hex: rgbToHex(rgb),
     };
   });
+}
+
+/**
+ * Extrae los colores de todas las zonas de la tira
+ */
+export async function extractStripColors(
+  imageData: string,
+  zones: ColorZone[] = INSTATEST_ZONES
+): Promise<ExtractedColor[]> {
+  const canvas = await imageToCanvas(imageData);
+  return extractColorsFromCanvas(canvas, zones);
 }
 
 /**
